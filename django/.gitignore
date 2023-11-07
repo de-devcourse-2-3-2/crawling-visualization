@@ -1,0 +1,6 @@
+# Default ignored files
+.idea
+app.log
+venv
+mysite/**/__pycache__
+mysite/**/migrations/__pycache__
