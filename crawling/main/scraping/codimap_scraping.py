@@ -2,13 +2,13 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver import ActionChains
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver import ActionChains
 from bs4 import BeautifulSoup
 import time
 import datetime
 import re
-import logger
+from ... import logger
 
 
 def codimap():
@@ -140,21 +140,3 @@ def codimap():
 
                 # 로그 파일 기록
                 logger.debug(codimap_dataset)
-
-                # DB Write
-                '''
-                작성
-                '''
-
-    return True
-
-
-def main():
-    if codimap():
-        return "successed"
-    else:
-        return "error"
-
-
-if __name__ == "__main__":
-    main()

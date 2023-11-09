@@ -8,7 +8,7 @@ def setLogOptions():
         level=logging.DEBUG,
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
-        filename='app.log',  # Specify the file name for file-based logging (optional)
+        filename='log/app.log',  # Specify the file name for file-based logging (optional)
     )
 
     

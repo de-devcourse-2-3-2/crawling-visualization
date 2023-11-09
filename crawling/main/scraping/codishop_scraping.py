@@ -1,27 +1,23 @@
-# 코디숍 전체 페이지에서 진행하는 크롤링 및 스크래핑
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver import ActionChains
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver import ActionChains
 from bs4 import BeautifulSoup
-import time
-import datetime
-import re
-import logger
+import time, datetime, re
+from ... import logger
 
 
-def codishop():
+def codishop():  # 코디숍 전체 페이지에서 진행하는 크롤링 및 스크래핑
     with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
-        codishop_lists_url = "https://www.musinsa.com/app/styles/lists"  # 코디숍 메인 페이지.
+        codishop_lists_url = "https://www.musinsa.com/app/styles/lists"
         driver.get(codishop_lists_url)
         driver.implicitly_wait(60)
         time.sleep(0.5)  # delay time 설정.
         soup = BeautifulSoup(driver.page_source, "html.parser")
-        total_pages_number = int(soup.find("span", "totalPagingNum").text)  # 전체 페이지 수.
+        total_pages_number = int(soup.find("span", "totalPagingNum").text)
 
-        # 모든 페이지에 대해서 수행
-        for i in range(1, total_pages_number + 1):
+        for i in range(1, total_pages_number + 1): # 모든 페이지에 대해서 수행
             page_url = f"https://www.musinsa.com/app/styles/lists?page={i}"  # 코디숍의 {i}번 페이지.
             driver.get(page_url)
             driver.implicitly_wait(60)
@@ -135,26 +131,7 @@ def codishop():
                 9. prices: 현재 가격 목록. ex)[12000, 50000, ..](list). 취소선 없는 가격.
                 10. del_prices: 삭제된 가격 목록. ex)[22000, 60000, ..](list). 취소선 있는 가격.
                 '''
-                codishop_dataset = [subject, date, category, views, img_src, tags, brands, names, prices,
-                                    del_prices]  # 데이터 리스트.
+                codishop_dataset = [subject, date, category, views, img_src, tags, brands, names, prices, del_prices]  # 데이터 리스트.
 
                 # 로그 파일 기록
                 logger.debug(codishop_dataset)
-
-                # DB Write
-                '''
-                작성
-                '''
-
-    return True
-
-
-def main():
-    if codishop():
-        return "successed"
-    else:
-        return "error"
-
-
-if __name__ == "__main__":
-    main()
