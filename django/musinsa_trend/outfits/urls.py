@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import get_brand_count_by_style
+from . import views
 
 urlpatterns = [
-    path('styles/<str:style_subject>/brands/count/', get_brand_count_by_style, name='brand-count-by-style'),
+    path('style-brand-count/', views.style_brand_count, name='style_brand_count'),
 ]

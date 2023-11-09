@@ -1,13 +1,18 @@
-from django.http import JsonResponse
-from .models import Style, Goods, StyleGoods
+from django.shortcuts import render
 from django.db.models import Count
+from .models import Style, StyleGoods, Goods
 
-def get_brand_count_by_style(request, style_subject):
-    """
-    스타일별 브랜드 개수 조회 기능 
-    """
-    style = Style.objects.get(subject=style_subject)
-    goods_ids = StyleGoods.objects.filter(style=style).values_list('goods', flat=True)
-    brand_count = Goods.objects.filter(id__in=goods_ids).values('brand').annotate(total=Count('brand')).order_by('brand')
+def style_brand_count(request):
+    styles = Style.objects.all()
+    brand_count = None
 
-    return JsonResponse(list(brand_count), safe=False)
+    if 'style' in request.GET:
+        style_id = request.GET['style']
+        selected_style = styles.get(pk=style_id)
+        goods_ids = StyleGoods.objects.filter(style=selected_style).values_list('goods_id', flat=True)
+        brand_count = Goods.objects.filter(id__in=goods_ids).values('brand').annotate(total=Count('brand'))
+
+    return render(request, 'test.html', {
+        'styles': styles,
+        'brand_count': brand_count
+    })
