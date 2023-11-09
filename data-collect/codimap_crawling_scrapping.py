@@ -136,8 +136,7 @@ def codimap():
                 codimap_dataset = [subject, date, category, views, img_src, tags, brands, names, prices, del_prices] # 데이터 리스트.
 
                 # 로그 파일 기록
-                # 아직 log 파일명에 대한 인자 전달하는 방법을 모름.
-                # logger.DEBUG(codimap_dataset)
+                logger.debug(codimap_dataset)
 
                 # DB Write
                 '''
