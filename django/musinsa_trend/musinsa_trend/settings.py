@@ -37,15 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_crontab',
+    'plot'
 
 ]
-
-CRONJOBS = [
-    # 8:30, 16:30
-    ('30 8,16 * * *', 'plot.tasks.update_chart', '>> /log/cron.log')
-]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
