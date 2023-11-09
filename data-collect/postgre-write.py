@@ -31,7 +31,7 @@ def tables_create():
 
     style_table_create = '''
         CREATE TABLE IF NOT EXISTS style (
-            id SERIAL PRIMARY KEY NOT NULL,
+            style_id SERIAL PRIMARY KEY NOT NULL,
             subject VARCHAR(64) NOT NULL,
             date DATE NOT NULL,
             category VARCHAR(50) NOT NULL,
@@ -47,9 +47,9 @@ def tables_create():
 
     style_goods_table_create = '''
         CREATE TABLE IF NOT EXISTS style_goods (
-            id SERIAL PRIMARY KEY NOT NULL,
-            RESTRICT style_id INT FOREIGN KEY REFERENCES style(id),
-            RESTRICT goods_id INT FOREIGN KEY REFERENCES goods(id),
+            id SERIAL PRIMARY KEY,
+            CONSTRAINT fk_style FOREIGN KEY (id) REFERENCES style(style_id),
+            CONSTRAINT fk_goods FOREIGN KEY (id) REFERENCES goods(goods_id),
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP,
             deleted_at TIMESTAMP);
@@ -59,7 +59,7 @@ def tables_create():
 
     goods_table_create = '''
         CREATE TABLE IF NOT EXISTS goods (
-            id SERIAL PRIMARY KEY NOT NULL,
+            goods_id SERIAL PRIMARY KEY NOT NULL,
             name VARCHAR(64) NOT NULL,
             brand VARCHAR(64) NOT NULL,
             price INT,
