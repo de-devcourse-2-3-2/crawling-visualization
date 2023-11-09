@@ -1,15 +1,15 @@
-import psycopg2, time, logging, datetime, sys
+import psycopg2, time, logging, sys
 
 
 def return_postgresql_conn():
     # 커밋 시 로컬에서 개인이 사용하던 정보는 삭제한 채 올려주세요. 아래 config 상태를 보존한 채 커밋해주세요!
     # 안그럼 crash 납니다.
     db_config = {
-        'user': '',
-        'password': '',
+        'user': 'postgres',
+        'password': 1234,
         'host': 'localhost',  # for local environment
         'port': 5432,
-        'database': ''
+        'database': 'devcourse1'
     }
 
     
@@ -72,18 +72,23 @@ def tables_create():
 
 
 
-def store_crawled_data(crawled_data):
-    postgre_cursor = return_postgresql_conn()
-    postgre_conn = postgre_cursor.cursor()
+def store_crawled_data(style_list, goods_list):
+    postgre_conn = return_postgresql_conn()
+    postgre_cursor = postgre_conn.cursor()
 
     try:
         postgre_cursor.executemany("""
-        INSERT INTO table_name(column1, column2, …)
-        VALUES (value1, value2, …);
-        """, crawled_data)
+        INSERT INTO style(subject, date, category, views, url, tag)
+        VALUES (%s, %s, %s, %s, %s, %s);
+        """, style_list)
+
+        postgre_cursor.executemany("""
+        INSERT INTO goods(name, brand, price, del_price)
+        VALUES (%s, %s, %s, %s);
+        """, goods_list)
 
         # TODO: find better way to process transactions. ex) 커밋/롤백하는 동작 따로 분리 후 각각 주기 설정
-        postgre_conn.commit()
+        postgre_cursor.commit()
         logging.info("Data successfully stored in the database.")
 
     except psycopg2.Error as err:
