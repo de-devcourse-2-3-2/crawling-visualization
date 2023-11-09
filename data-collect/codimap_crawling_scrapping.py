@@ -1,8 +1,8 @@
-# 코디숍 전체 페이지에서 진행하는 크롤링 및 스크래핑
+# 코디맵 전체 페이지에서 진행하는 크롤링 및 스크래핑
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait 
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver import ActionChains
 from bs4 import BeautifulSoup
 import time
@@ -10,10 +10,10 @@ import datetime
 import re
 import logger
 
-def codishop():
+def codimap():
     with webdriver.Chrome(service = Service(ChromeDriverManager().install())) as driver:
-        codishop_lists_url = "https://www.musinsa.com/app/styles/lists" # 코디숍 메인 페이지.
-        driver.get(codishop_lists_url)
+        codimap_lists_url = "https://www.musinsa.com/app/codimap/lists" # 코디맵 메인 페이지.
+        driver.get(codimap_lists_url)
         driver.implicitly_wait(60)
         time.sleep(0.5) # delay time 설정.
         soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -21,7 +21,7 @@ def codishop():
 
         # 모든 페이지에 대해서 수행
         for i in range(1, total_pages_number + 1):
-            page_url = f"https://www.musinsa.com/app/styles/lists?page={i}" # 코디숍의 {i}번 페이지.
+            page_url = f"https://www.musinsa.com/app/codimap/lists?page={i}" # 코디맵의 {i}번 페이지.
             driver.get(page_url)
             driver.implicitly_wait(60)
             time.sleep(0.5) # delay time 설정.
@@ -68,12 +68,12 @@ def codishop():
                 codi_number = re.sub(r'[^0-9]', '', str(codi_number_element.attrs["onclick"])) # ex) "goView(37149)" -> 37149 추출.\
         
                 # 해당 코디의 제목.
-                subject = "styles" + "-" + codi_number # 예) "styles-1511".
+                subject = "codimap" + "-" + codi_number # 예) "codimap-1511".
 
                 # --------------------------------------------------------------------------------     
                 # 코디 상세 페이지에서의 수행.
                 
-                detail_url = f"https://www.musinsa.com/app/styles/views/{codi_number}" # 해당 코디 상세 페이지
+                detail_url = f"https://www.musinsa.com/app/codimap/views/{codi_number}" # 해당 코디 상세 페이지
                 driver.get(detail_url)
                 driver.implicitly_wait(60)
                 time.sleep(0.5) # delay time 설정.
@@ -121,7 +121,7 @@ def codishop():
                 
                 ''' 추출된 정보들
                 ** style table **
-                1. subject: 제목. ex)"styles-1511"(string)
+                1. subject: 제목. ex)"codimap-1511"(string)
                 2. date: 게시된 날짜. ex)"2023-11-07"(string)
                 3. category: 스타일 카테고리. ex)"댄디"(string)
                 4. views: 조회수. ex)1100(int)
@@ -133,8 +133,7 @@ def codishop():
                 9. prices: 현재 가격 목록. ex)[12000, 50000, ..](list). 취소선 없는 가격.
                 10. del_prices: 삭제된 가격 목록. ex)[22000, 60000, ..](list). 취소선 있는 가격.
                 '''
-                # np로 변환 하기.
-                codishop_dataset = [subject, date, category, views, img_src, tags, brands, names, prices, del_prices] # 데이터 리스트.
+                codimap_dataset = [subject, date, category, views, img_src, tags, brands, names, prices, del_prices] # 데이터 리스트.
 
                 # 로그 파일 기록
                 # 아직 log 파일명에 대한 인자 전달하는 방법을 모름.
@@ -148,7 +147,7 @@ def codishop():
     return True
 
 def main():
-    if codishop():
+    if codimap():
         return "successed"
     else:
         return "error"
