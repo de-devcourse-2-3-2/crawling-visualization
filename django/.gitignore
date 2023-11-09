@@ -8,3 +8,6 @@ mysite/**/migrations/__pycache__
 # personal ignored files
 Pipfile
 Pipfile.lock
+
+#django
+secrets.json
