@@ -1,2 +1,3 @@
-test
 scraping/codishop.csv
+crawling/__pycache__/
+crawling/main/**/__pycache__/
