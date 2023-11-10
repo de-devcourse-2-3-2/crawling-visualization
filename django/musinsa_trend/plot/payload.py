@@ -1,5 +1,5 @@
 class Payload:
-    # JSON 데이터 예시 (실제 데이터로 교체해야 함)
+    # SAMPLE DATA
     SEASONS = ['19-Mar','19-Jun','19-Sep','19-Dec','20-Mar','20-Jun','20-Sep','20-Dec','21-Mar','21-Jun','21-Sep','21-Dec','22-Mar','22-Jun','22-Sep','22-Dec','23-Mar','23-Jun','23-Sep','23-Dec']
     SAMPLE_DATA = [
         {'AMEKAJI': [1, 3, 4, 7, 11, 18, 39, 40, 30, 35, 32, 31, 20, 15, 11, 7, 7, 2, 13, 10]},
