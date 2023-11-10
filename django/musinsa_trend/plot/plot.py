@@ -36,7 +36,7 @@ class Plot() :
         #save it
         save_figure(plt,FILE_NAME_LINE)
 
-    def chart3(df) :
+    def stacked_bar(df) :
         # get columns name
         style_names = df.columns.tolist()
         # get the totals for each row
