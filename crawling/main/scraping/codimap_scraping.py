@@ -1,4 +1,5 @@
 # 코디맵 전체 페이지에서 진행하는 크롤링 및 스크래핑
+# 아직 codishop과 같은 코드 개선 작업 안하고 원본 그대로임
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -8,7 +9,7 @@ from bs4 import BeautifulSoup
 import time
 import datetime
 import re
-from ... import logger
+from .. import logger
 
 
 def codimap():

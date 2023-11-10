@@ -4,34 +4,38 @@ from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver import ActionChains
 from bs4 import BeautifulSoup
-import time, datetime, re
-from ... import logger
+from datetime import date as dt
+import time, re, logging, psycopg2
 from ..database import postgres_write as pw
 
 
-def set_driver_and_soup(crawling_page_url, driver):
+def set_driver_and_soup(crawling_page_url):
     driver.get(crawling_page_url)
     driver.implicitly_wait(60)
     time.sleep(0.5)  # delay time 설정
+    logging.info("Main page crawling start. {}".format(crawling_page_url))
     return BeautifulSoup(driver.page_source, "html.parser")
 
 
 def return_list_data(soup, tag_type, selector_path):
-    tag_element_list = soup.find_all(tag_type, selector_path)
-    return [tag_element.text for tag_element in tag_element_list]
+    try:
+        tag_element_list = soup.find_all(tag_type, selector_path)
+        return [tag_element.text for tag_element in tag_element_list]
+    except:
+        logging.error("oops, there's sth wrong within bs4 object, tag type or css selector path")
 
 
-def main_page_scraping(pages_number):
-    page_url = f"https://www.musinsa.com/app/styles/lists?page={pages_number}"
-    driver.get(page_url)
-    driver.implicitly_wait(60)
-    time.sleep(0.5)  # delay time 설정.
-    soup = BeautifulSoup(driver.page_source, "html.parser")
+def add_at_columns(data_list):
+    data_list.extend([dt.today(), None, None])   #.strftime('%Y-%m-%d %H:%M:%S')
+
+
+
+def main_page_scraping(soup):
     codies = soup.find_all("li", "style-list-item")  # 해당 페이지의 코디 리스트.
 
-    for codi in codies:
+    for codi in codies:  # 현재 페이지의 모든 코디에 대해서 수행
         img_element = codi.select_one("div.style-list-item__thumbnail > a > div > img")
-        img_src = img_element.attrs["src"]  # 이미지 url.
+        img_src = img_element.attrs["src"]  # 이미지 url
 
         category_element = codi.select_one("div.style-list-information > a > span") # 스타일 카테고리
         # category를 분류할 때, 아동복 코디의 경우 text가 존재하지 않아 null값인 경우 '아동복'으로 저장
@@ -41,18 +45,17 @@ def main_page_scraping(pages_number):
         # 올린지 얼마 안 된 게시글에는 'N' 텍스트를 가진 <span> 태그가 하나 더 있음.
         # 일부 게시글에는 '댓글' 텍스트를 가진 <span> 태그가 하나 더 있음.
         # 구조 : (N) | 게시일 | 조회수 | (댓글)
-        date_element, view_element = info_elements[1], info_elements[2] if info_elements[0].text == 'N' else info_elements[0], info_elements[1]
-        date_string = date_element.text  # 코디 게시일 예) "23.11.07"
-        dates = date_string.split('.')
-        year, month, day = int("20" + dates[0]), int(dates[1]), int(dates[2])
-        date = datetime.date(year, month, day).strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
+        a, b, c = info_elements[0], info_elements[1], info_elements[2]
+        date_element, view_element = (a, b) if a.text != 'N' else (b, c)
+        dates = date_element.text.split('.')  # 코디 게시일 예) "23.11.07"
+        # date = psycopg2.Date(int("20" + dates[0]), int(dates[1]), int(dates[2]))
+        date = dt(int("20" + dates[0]), int(dates[1]), int(dates[2]))  # .strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
         views = int(re.sub(r'[^0-9]', '', view_element.text))  # 코디 게시물 조회수 예) "조회수 1,100" -> 1100 추출.
 
         codi_number_element = codi.select_one("div.style-list-item__thumbnail > a") # 코디 넘버링 값
         codi_number = re.sub(r'[^0-9]', '', str(codi_number_element.attrs["onclick"]))  # ex) "goView(37149)" -> 37149 추출.\
         subject = "styles" + "-" + codi_number  # 해당 코디의 제목 예) "styles-1511".
-
-        return codi_number, [subject, date, category, views, img_src]
+        return codi_number, (subject, date,)  # date, category, views, img_src
 
 
 def scraping_goods_detail(soup):
@@ -64,24 +67,17 @@ def scraping_goods_detail(soup):
     prices, del_prices = [], [] # 현재 가격 & 삭제된 가격 목록
     price_element_list = soup.find_all("div", "price")  # class="price"에 해당되는 상품 가격 리스트
     for price_element in price_element_list:
-        price_string = price_element.text  # 예시) 269,100원299,000원10% ==> {현재가격}{삭제가격}{할인율}
-        price_string_list = price_string.split('원')
+        price_string_list = price_element.text.split('원')  # 예시) 269,100원299,000원10% ==> {현재가격}{삭제가격}{할인율}
+        price_string = price_string_list[0]  # 현재 가격에 대한 처리
+        prices.append(int(re.sub(r'[^0-9]', '', price_string)))  # 예시) "26,900" => 26900
 
-        # 현재 가격에 대한 처리.
-        price_string = price_string_list[0]
-        price = int(re.sub(r'[^0-9]', '', price_string))
-        prices.append(price)  # 예시) "26,900" => 26900
-
-        # 삭제된 가격에 대한 처리.
-        del_price = None
-        # 삭제된 가격이 존재하는 경우 값 입력, 아니면 None 그대로.
-        if len(price_string_list) > 2:
-            del_price_string = price_string_list[1]
-            del_price = int(re.sub(r'[^0-9]', '', del_price_string))
+        del_price = None  # 삭제된 가격에 대한 처리.
+        if len(price_string_list) > 2:  # 삭제된 가격이 존재하는 경우 값 입력, 아니면 None 그대로.
+            del_price = int(re.sub(r'[^0-9]', '', price_string_list[1]))
         del_prices.append(del_price)
 
     goods_detail_data = [brands, names, prices, del_prices]
-    logger.debug(goods_detail_data)
+    logging.debug(goods_detail_data)
     return goods_detail_data
 
 
@@ -100,17 +96,23 @@ def main_page_crawling():
         9. prices: 현재 가격 목록. ex)[12000, 50000, ..](list). 취소선 없는 가격.
         10. del_prices: 삭제된 가격 목록. ex)[22000, 60000, ..](list). 취소선 있는 가격.
     '''
+    pw.tables_create()
+
     global driver
     with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
         soup = set_driver_and_soup("https://www.musinsa.com/app/styles/lists")  # 코디샵 전체 페이지
         total_pages_number = int(soup.find("span", "totalPagingNum").text)
 
         for i in range(1, total_pages_number + 1):
-            codi_number, style_data_list = main_page_scraping(total_pages_number)  # db write 단위!
+            soup = set_driver_and_soup(f"https://www.musinsa.com/app/codimap/lists?page={i}")
+            codi_number, style_data_list = main_page_scraping(soup)  # db write 단위!
 
+            # 상세 페이지 크롤링 시작을 위해 soup 재세팅
             soup = set_driver_and_soup(f"https://www.musinsa.com/app/styles/views/{codi_number}") # 해당 코디 상세 페이지
-            tags = return_list_data(soup, "a", "ui-tag-list__item") # 태그 목록 예시) "#겨울"
-            style_data_list.append(tags)
+            # tags = return_list_data(soup, "a", "ui-tag-list__item")  # 태그 목록 예시) "#겨울"
+            # style_data_list.append(" ".join(tags))
+            # add_at_columns(style_data_list)
+            logging.info("Style No.{} row- {}".format(codi_number, style_data_list))
             style_id = pw.insert_style_data(style_data_list)
 
             goods_detail_data = scraping_goods_detail(soup)

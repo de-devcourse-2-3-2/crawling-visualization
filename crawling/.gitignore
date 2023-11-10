@@ -1,3 +1,6 @@
 scraping/codishop.csv
 crawling/__pycache__/
-crawling/main/**/__pycache__/
+crawling/main/**/__pycache__
+crawling/main/**/app.log
+crawling/test/__pycache__
+main/scraping/log
