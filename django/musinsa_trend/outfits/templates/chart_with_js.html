@@ -30,12 +30,12 @@
             color: #555;
         }
 
-        .chart-container {
+        .img-container {
             display: none;
             position: relative;
         }
 
-        .active-chart {
+        .active-img {
             display: block;
         }
 
@@ -82,20 +82,10 @@
 
         <!-- Toggle buttons (populated dynamically) -->
         <div class="button-container" id="toggle-buttons"></div>
+        <!-- Image for chart-->
+        <div id="img-container"></div>
 
-        <!-- Loading animation -->
-        <img class="loading-img" src="loading.gif" alt="로딩 중">
     </div>
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJAX Image Request</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-</head>
-<body>
-
     <script>
         // Function to make async request
         function makeAjaxRequest(url) {
@@ -105,13 +95,18 @@
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
                             const response = JSON.parse(xhr.responseText);
-                            resolve(response);
+                            const img_url = response.img_url; // img_url 속성 추출
+                            resolve(img_url);
                         } else {
                             reject(xhr.statusText);
                         }
                     }
                 };
                 xhr.open("GET", url, true);
+
+                //같은 이름의 이미지를 새로고침하기 위해 다음과 같은 옵션을 헤더에 추가함
+                xhr.setRequestHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
                 xhr.send();
             });
         }
@@ -119,15 +114,16 @@
         // Populate toggle buttons
         const toggleButtonsContainer = document.getElementById('toggle-buttons');
         async function populateToggleButtons() {
-            const types = [
+            const chart_types = [
                 { id: 1, title: "계절:스타일" },
                 { id: 2, title: "스타일:브랜드" },
-                // Add more buttons as needed
+                { id: 3, title: "데브코스" },
+                { id: 4, title: "파이썬" },
             ];
 
-            for (const type of types) {
+            for (const chart_type of chart_types) {
                 const button = document.createElement('button');
-                button.textContent = chart.title;
+                button.textContent = chart_type.title;
                 button.addEventListener('click', async () => {
                     // Remove 'active' class from all buttons
                     document.querySelectorAll('.button-container button').forEach(btn => {
@@ -136,34 +132,27 @@
 
                     // Add 'active' class to the clicked button
                     button.classList.add('active');
-
-                    // Show loading animation
-                    const loadingImg = document.querySelector('.loading-img');
-                    loadingImg.style.display = 'block';
                     
-                    const apiUrl = `chart/${type.id}`;
-                    const imgUrl = makeAjaxRequest(apiUrl);
-                    
-                    showImg(imgUrl);
-
-                    // Hide loading animation after chart is loaded
-                    loadingImg.style.display = 'none';
+                    // wait for success async request with param:chart_type
+                    const apiUrl = `../chart?chart_type=${chart_type.id}`;
+                    const response = await makeAjaxRequest(apiUrl)
+                    .then(img_url => {showImg(img_url);});
                 });
                 toggleButtonsContainer.appendChild(button);
             }
         }
 
-        async function showImg(imgUrl) {
+        async function showImg(fname_img) {
             // Hide all chart containers
             document.querySelectorAll('.img-container').forEach(container => {
                 container.classList.remove('active-img');
             });
             
             // Show the selected chart container
-            const chartContainer = document.getElementById('chart-container');
-            chartContainer.innerHTML = `
+            const imgContainer = document.getElementById('img-container');
+            imgContainer.innerHTML = `
                 <div class="img-container active-img">
-                    <img id="chart-img" src="${imgUrl}">
+                    <img id="chart-img" src="../static/media/${fname_img}">
                 </div>
             `;
 
