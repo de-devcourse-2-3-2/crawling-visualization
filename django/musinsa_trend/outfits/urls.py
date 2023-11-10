@@ -6,13 +6,19 @@ from . import views
 
 urlpatterns = [
     path('index', views.index, name='index'),
-    path('openapi_schema/', get_schema_view(
+    path('chart/', views.chart, {'chart_type': 0}, name='chart'),
+    path('style/', views.style, {'by': 'season'}, name='style'),
+    
+    # Schema view of app
+    path('schema_view/', get_schema_view(
         title="Musinsa Trend Analyzer",
         description="All APIs",
         version="1.0.0"
-    ), name='openapi_schema'),
+    ), name='schema_view'),
+
+    # Openapi schema view UI
     path('openapi/', TemplateView.as_view(
         template_name='openapi_schema.html',
-        extra_context={'schema_url':'openapi_schema'}
+        extra_context={'schema_url':'schema_view'}
     ), name='openapi_schema_view'),
 ]

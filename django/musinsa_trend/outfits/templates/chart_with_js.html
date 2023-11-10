@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무신사 트렌드 분석</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #main-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #555;
+        }
+
+        .chart-container {
+            display: none;
+            position: relative;
+        }
+
+        .active-chart {
+            display: block;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button-container button {
+            margin: 0 5px;
+            background-color: #7aaac4;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .button-container button.active {
+            background-color: #4c6a7a;
+        }
+
+        .loading-img {
+            display: none;
+            width: 50px;
+            height: 50px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <h1>무신사 트렌드 분석</h1>
+        <h2>차트를 선택해주세요</h2>
+
+        <!-- Toggle buttons (populated dynamically) -->
+        <div class="button-container" id="toggle-buttons"></div>
+
+        <!-- Loading animation -->
+        <img class="loading-img" src="loading.gif" alt="로딩 중">
+    </div>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Image Request</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+    <script>
+        // Function to make async request
+        function makeAjaxRequest(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            resolve(response);
+                        } else {
+                            reject(xhr.statusText);
+                        }
+                    }
+                };
+                xhr.open("GET", url, true);
+                xhr.send();
+            });
+        }
+
+        // Populate toggle buttons
+        const toggleButtonsContainer = document.getElementById('toggle-buttons');
+        async function populateToggleButtons() {
+            const types = [
+                { id: 1, title: "계절:스타일" },
+                { id: 2, title: "스타일:브랜드" },
+                // Add more buttons as needed
+            ];
+
+            for (const type of types) {
+                const button = document.createElement('button');
+                button.textContent = chart.title;
+                button.addEventListener('click', async () => {
+                    // Remove 'active' class from all buttons
+                    document.querySelectorAll('.button-container button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Add 'active' class to the clicked button
+                    button.classList.add('active');
+
+                    // Show loading animation
+                    const loadingImg = document.querySelector('.loading-img');
+                    loadingImg.style.display = 'block';
+                    
+                    const apiUrl = `chart/${type.id}`;
+                    const imgUrl = makeAjaxRequest(apiUrl);
+                    
+                    showImg(imgUrl);
+
+                    // Hide loading animation after chart is loaded
+                    loadingImg.style.display = 'none';
+                });
+                toggleButtonsContainer.appendChild(button);
+            }
+        }
+
+        async function showImg(imgUrl) {
+            // Hide all chart containers
+            document.querySelectorAll('.img-container').forEach(container => {
+                container.classList.remove('active-img');
+            });
+            
+            // Show the selected chart container
+            const chartContainer = document.getElementById('chart-container');
+            chartContainer.innerHTML = `
+                <div class="img-container active-img">
+                    <img id="chart-img" src="${imgUrl}">
+                </div>
+            `;
+
+            // Fade-in effect when the image is loaded
+            const imgElement = document.getElementById('chart-img');
+            imgElement.onload = function() {
+                imgElement.style.opacity = 1;
+            };
+        }
+        
+        // Initialize the toggle buttons
+        populateToggleButtons();
+    </script>
+</body>
+</html>
