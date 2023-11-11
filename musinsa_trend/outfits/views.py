@@ -8,8 +8,7 @@ from plot import plot
 
 @api_view(['GET'])
 def index(request) :
-    context = {'img_url' : 'imgage03.png'}
-    return render(request,'chart_with_js.html', context)
+    return render(request,'index.html')
 
 @api_view(['GET'])
 def chart(request,chart_type):
@@ -19,5 +18,5 @@ def chart(request,chart_type):
 
 @api_view(['GET'])
 def style(request, by):
-    data = get_styles_by(by)
-    return render(request, 'style.html', data)
+    get_styles_by(by)
+    return render(request, 'style_list.html', data)
