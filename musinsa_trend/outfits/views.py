@@ -74,3 +74,28 @@ def popular_styles_by_category(request):
         return JsonResponse(results, safe=False)
     else:
         return JsonResponse({'error': '카테고리가 지정되지 않았습니다.'}, status=400)
+
+def top_styles_by_season(request):
+    """
+    시즌에 대한 최상위 스타일 5개 조회
+    해당 스타일에 있는 사진, 그 스타일에 있는 상품 list 조회
+    """
+    season_name = request.GET.get('season')
+    if season_name:
+        top_styles = Style.objects.filter(season=season_name).order_by('-views')[:5]
+
+        results = [
+            {
+                'subject': style.subject,
+                'views': style.views,
+                'url': style.URL,
+                'style_goods': [
+                    {'name': sg.goods.name, 'brand': sg.goods.brand}
+                    for sg in StyleGoods.objects.filter(style=style)
+                ]
+            } for style in top_styles
+        ]
+        logger.info(f'*******top_styles_by_season : {results} 이 검색되었습니다.')
+        return JsonResponse(results, safe=False)
+    else:
+        return JsonResponse({'error': 'need to choice season.'}, status=400)
