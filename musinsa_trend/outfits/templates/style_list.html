@@ -1,0 +1,20 @@
+<div id="list-cotainter">
+	<h3>인기있는 스타일을 직접 확인해보세요</h3>
+	<ul style = "display : flex;">
+		<li>
+			<div>
+				<a href="http://musinsa.com/app/styles/views/" + {{ style_id }} title="{{style_name}}">
+					<img src="http://" + {{img_src}}>
+				</a>
+			</div>
+			<div>
+					<span>{{style_category}}</span>
+					<strong>{{subject}}</strong>
+			</div>
+			<div>
+				<span>{{date}}</span>
+				<span>조회 {{views}}</span>
+			</div>
+		</li>
+	</ul>
+</div>
