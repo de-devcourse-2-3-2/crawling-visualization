@@ -10,19 +10,26 @@ setLogOptions()
 logger = logging.getLogger(__name__)
 
 def style_brand_count(request):
-    styles = Style.objects.all()
-    brand_count = None
+    """
+    스타일 선택 (ex . 아메카지)
+    모든 브랜드 개수 확인
+    """
+    styles = list(Style.objects.all().values('id', 'subject'))
+    brand_count_data = None
 
     if 'style' in request.GET:
         style_id = request.GET['style']
-        selected_style = styles.get(pk=style_id)
+        selected_style = Style.objects.get(pk=style_id)
         goods_ids = StyleGoods.objects.filter(style=selected_style).values_list('goods_id', flat=True)
         brand_count = Goods.objects.filter(id__in=goods_ids).values('brand').annotate(total=Count('brand'))
+        brand_count_data = list(brand_count) 
 
-    logger.info(f'*******{request}, style : {styles}, brand_count : {brand_count}')
-    return render(request, 'test.html', {
+    logger.info(f'********style_brand_count의 검색결과는 아래와 같습니다.\n'f'styles : {styles} -> brand_count : {brand_count_data}')
+
+
+    return JsonResponse({
         'styles': styles,
-        'brand_count': brand_count
+        'brand_count': brand_count_data
     })
 
 def season_style_trend(request):
@@ -30,7 +37,6 @@ def season_style_trend(request):
     계절 별 조회수 10,000개에 대해서 카테고리별 개수 확인
     나타나는 값 : 상위 5개
     나머지에 대해서는 합해서 return
-    -> 총 6개 값 return 
     """
     season = request.GET.get('season', 'Spring')
     styles = Style.objects.filter(
