@@ -45,8 +45,13 @@ def main_page_scraping(soup):
         # 올린지 얼마 안 된 게시글에는 'N' 텍스트를 가진 <span> 태그가 하나 더 있음.
         # 일부 게시글에는 '댓글' 텍스트를 가진 <span> 태그가 하나 더 있음.
         # 구조 : (N) | 게시일 | 조회수 | (댓글)
-        a, b, c = info_elements[0], info_elements[1], info_elements[2]
-        date_element, view_element = (a, b) if a.text != 'N' else (b, c)
+        date_element, view_element = None, None
+        if info_elements[0].text == 'N':
+            date_element = info_elements[1]
+            view_element = info_elements[2]
+        else:
+            date_element = info_elements[0]
+            view_element = info_elements[1]
         dates = date_element.text.split('.')  # 코디 게시일 예) "23.11.07"
         # date = psycopg2.Date(int("20" + dates[0]), int(dates[1]), int(dates[2]))
         when = date(int("20" + dates[0]), int(dates[1]), int(dates[2]))  # .strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
@@ -118,4 +123,4 @@ def main_page_crawling():
 
             goods_detail_data = scraping_goods_detail(soup)
             goods_id = postgres.insert_goods_data(goods_detail_data)
-            postgres.insert_style_goods(style_id, goods_id)
+            # postgres.insert_style_goods(style_id, goods_id)
