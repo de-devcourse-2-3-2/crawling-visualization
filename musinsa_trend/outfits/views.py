@@ -57,9 +57,9 @@ def season_style_trend():
 
     logger.info(
         f'********season_style_trend의 검색결과는 아래와 같습니다.\n'
+        f'season : {season}\n'
         f'styles : {top_categories}\n'
         f'other_count : {other_count}\n'
-        f'season : {season}'
     )
 
     response_data = {
