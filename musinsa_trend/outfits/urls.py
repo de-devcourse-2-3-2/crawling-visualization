@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('category_brand_count/', views.style_brand_count, name='category_brand_count'),
+    path('category_brand_count/', views.category_brand_count, name='category_brand_count'),
     path('season-style-trend/', views.season_style_trend, name='season_style_trend'),
     path('popular-styles/', views.popular_styles_by_category, name='popular_styles_by_category'),
     path('top-styles/', views.top_styles_by_season, name='top_styles_by_season'),
