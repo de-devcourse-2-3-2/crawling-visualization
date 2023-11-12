@@ -4,7 +4,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver import ActionChains
 from bs4 import BeautifulSoup
-from datetime import date as dt
+from datetime import date
 import time, re, logging, psycopg2
 from ..database import postgres_write as pw
 
@@ -26,7 +26,7 @@ def return_list_data(soup, tag_type, selector_path):
 
 
 def add_at_columns(data_list):
-    data_list.extend([dt.today(), None, None])   #.strftime('%Y-%m-%d %H:%M:%S')
+    data_list.extend([date.today(), None, None])   #.strftime('%Y-%m-%d %H:%M:%S')
 
 
 
@@ -49,13 +49,13 @@ def main_page_scraping(soup):
         date_element, view_element = (a, b) if a.text != 'N' else (b, c)
         dates = date_element.text.split('.')  # 코디 게시일 예) "23.11.07"
         # date = psycopg2.Date(int("20" + dates[0]), int(dates[1]), int(dates[2]))
-        date = dt(int("20" + dates[0]), int(dates[1]), int(dates[2]))  # .strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
+        when = date(int("20" + dates[0]), int(dates[1]), int(dates[2]))  # .strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
         views = int(re.sub(r'[^0-9]', '', view_element.text))  # 코디 게시물 조회수 예) "조회수 1,100" -> 1100 추출.
 
         codi_number_element = codi.select_one("div.style-list-item__thumbnail > a") # 코디 넘버링 값
         codi_number = re.sub(r'[^0-9]', '', str(codi_number_element.attrs["onclick"]))  # ex) "goView(37149)" -> 37149 추출.\
-        subject = "styles" + "-" + codi_number  # 해당 코디의 제목 예) "styles-1511".
-        return codi_number, (subject, date,)  # date, category, views, img_src
+        subject = "shop" + "-" + codi_number  # 해당 코디의 제목 예) "shop-1511".
+        return codi_number, [subject, when, category, views, img_src]
 
 
 def scraping_goods_detail(soup):
@@ -76,7 +76,7 @@ def scraping_goods_detail(soup):
             del_price = int(re.sub(r'[^0-9]', '', price_string_list[1]))
         del_prices.append(del_price)
 
-    goods_detail_data = [brands, names, prices, del_prices]
+    goods_detail_data = [(a,b,c,d) for a,b,c,d in zip(brands, names, prices, del_prices)]
     logging.debug(goods_detail_data)
     return goods_detail_data
 
@@ -96,7 +96,8 @@ def main_page_crawling():
         9. prices: 현재 가격 목록. ex)[12000, 50000, ..](list). 취소선 없는 가격.
         10. del_prices: 삭제된 가격 목록. ex)[22000, 60000, ..](list). 취소선 있는 가격.
     '''
-    pw.tables_create()
+    postgres = pw.DB_Write()
+    postgres.tables_create()
 
     global driver
     with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
@@ -109,12 +110,12 @@ def main_page_crawling():
 
             # 상세 페이지 크롤링 시작을 위해 soup 재세팅
             soup = set_driver_and_soup(f"https://www.musinsa.com/app/styles/views/{codi_number}") # 해당 코디 상세 페이지
-            # tags = return_list_data(soup, "a", "ui-tag-list__item")  # 태그 목록 예시) "#겨울"
-            # style_data_list.append(" ".join(tags))
+            tags = return_list_data(soup, "a", "ui-tag-list__item")  # 태그 목록 예시) "#겨울"
+            style_data_list.append(" ".join(tags))
             # add_at_columns(style_data_list)
             logging.info("Style No.{} row- {}".format(codi_number, style_data_list))
-            style_id = pw.insert_style_data(style_data_list)
+            style_id = postgres.insert_style_data(style_data_list)
 
             goods_detail_data = scraping_goods_detail(soup)
-            goods_id = pw.insert_goods_data(goods_detail_data)
-            pw.insert_style_goods(style_id, goods_id)
+            goods_id = postgres.insert_goods_data(goods_detail_data)
+            postgres.insert_style_goods(style_id, goods_id)
