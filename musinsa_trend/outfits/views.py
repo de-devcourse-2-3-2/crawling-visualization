@@ -9,28 +9,25 @@ from logger import setLogOptions
 setLogOptions()
 logger = logging.getLogger(__name__)
 
-def style_brand_count(request):
+def category_brand_count():
     """
     스타일 선택 (ex . 아메카지)
     모든 브랜드 개수 확인
     """
-    styles = list(Style.objects.all().values('id', 'subject'))
-    brand_count_data = None
-
-    if 'style' in request.GET:
-        style_id = request.GET['style']
-        selected_style = Style.objects.get(pk=style_id)
-        goods_ids = StyleGoods.objects.filter(style=selected_style).values_list('goods_id', flat=True)
+    
+    category_count_data = []
+    for category in Style.objects.values('category').distinct():
+        category_name = category['category']
+        goods_ids = StyleGoods.objects.filter(style__category=category_name).values_list('goods_id', flat=True)
         brand_count = Goods.objects.filter(id__in=goods_ids).values('brand').annotate(total=Count('brand'))
-        brand_count_data = list(brand_count) 
+        category_count_data.append({
+            'category': category_name,
+            'brand_counts': list(brand_count)
+        })
 
-    logger.info(f'********style_brand_count의 검색결과는 아래와 같습니다.\n'f'styles : {styles} -> brand_count : {brand_count_data}')
-
-
-    return JsonResponse({
-        'styles': styles,
-        'brand_count': brand_count_data
-    })
+    return {
+        'category_brand_counts': category_count_data
+    }
 
 def season_style_trend():
     """
@@ -66,7 +63,7 @@ def season_style_trend():
         'top_categories': top_categories,
         'other_count': other_count,
     }
-    # Json 형태로 return 변경
+    
     return response_data
 
 def popular_styles_by_category(request):
