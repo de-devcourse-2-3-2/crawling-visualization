@@ -32,24 +32,28 @@ def style_brand_count(request):
         'brand_count': brand_count_data
     })
 
-def season_style_trend(request):
+def season_style_trend():
     """
     계절 별 조회수 10,000개 이상인 스타일에 대해서 카테고리별 개수 확인
     나타나는 값: 상위 5개 카테고리
     나머지에 대해서는 합해서 반환
     """
-    season = request.GET.get('season', 'Spring')
-    top_categories = list(Style.objects.filter(
-        season=season,
-        views__gte=10000
-    ).values('category').annotate(count=Count('category')).order_by('-count')[:5])
+    # request 없이 계절 모두 구현 되도록 변경 
+    seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
+    response_data = {}
 
-    other_count = Style.objects.filter(
-        season=season,
-        views__gte=10000
-    ).exclude(
-        category__in=[category['category'] for category in top_categories]
-    ).count()
+    for season in seasons:
+        top_categories = list(Style.objects.filter(
+            season=season,
+            views__gte=10000
+        ).values('category').annotate(count=Count('category')).order_by('-count')[:5])
+
+        other_count = Style.objects.filter(
+            season=season,
+            views__gte=10000
+        ).exclude(
+            category__in=[category['category'] for category in top_categories]
+        ).count()
 
     logger.info(
         f'********season_style_trend의 검색결과는 아래와 같습니다.\n'
@@ -61,9 +65,9 @@ def season_style_trend(request):
     response_data = {
         'top_categories': top_categories,
         'other_count': other_count,
-        'season': season
     }
-    return JsonResponse(response_data)
+    # Json 형태로 return 변경
+    return response_data
 
 def popular_styles_by_category(request):
     """
