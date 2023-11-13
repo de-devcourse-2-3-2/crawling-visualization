@@ -122,5 +122,5 @@ def main_page_crawling():
             style_id = postgres.insert_style_data(style_data_list)
 
             goods_detail_data = scraping_goods_detail(soup)
-            goods_id = postgres.insert_goods_data(goods_detail_data)
-            postgres.insert_style_goods(style_id, goods_id)
+            goods_ids = postgres.insert_goods_data(goods_detail_data)
+            postgres.insert_style_goods(style_id, goods_ids)

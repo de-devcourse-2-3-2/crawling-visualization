@@ -65,13 +65,12 @@ class DB_Write:
 
         style_goods_table_create = '''
                 CREATE TABLE IF NOT EXISTS style_goods (
-                    id SERIAL PRIMARY KEY,
-                    CONSTRAINT fk_style FOREIGN KEY (id) REFERENCES style(style_id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT fk_goods FOREIGN KEY (id) REFERENCES goods(goods_id)ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT fk_style FOREIGN KEY (style_id) REFERENCES style(style_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT fk_goods FOREIGN KEY (goods_id) REFERENCES goods(goods_id) ON DELETE CASCADE ON UPDATE CASCADE,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT NULL,
-                    deleted_at TIMESTAMP DEFAULT NULL
-                    );
+                    deleted_at TIMESTAMP DEFAULT NULL,
+                    PRIMARY KEY (style_id, goods_id));
             '''
         self.postgre_cursor.execute(style_goods_table_create)
 
@@ -84,7 +83,6 @@ class DB_Write:
             self.postgre_conn.commit()
             logging.info("Data successfully stored in the style table.")
             return self.postgre_cursor.fetchone()[0]  # RETURNING style_id;
-            # return style_id
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
@@ -96,10 +94,13 @@ class DB_Write:
 
     def insert_goods_data(self, goods_list):
         try:
-            self.postgre_cursor.executemany("""INSERT INTO goods (name, brand, price, del_price) VALUES (%s, %s, %s, %s) RETURNING goods_id;""", goods_list)
-            self.postgre_conn.commit()
-            logging.info("Data successfully stored in the goods table.")
-            return self.postgre_cursor.fetchone()[0]  # RETURNING goods_id;
+            goods_ids = []
+            for goods in goods_list:
+                self.postgre_cursor.execute("""INSERT INTO goods (name, brand, price, del_price) VALUES (%s, %s, %s, %s) RETURNING goods_id;""", goods)
+                self.postgre_conn.commit()
+                logging.info("Data successfully stored in the goods table.")
+                goods_ids.append(self.postgre_cursor.fetchone()[0])  # RETURNING goods_id;
+            return goods_ids
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
@@ -108,31 +109,14 @@ class DB_Write:
         #     postgre_conn.close()
 
 
-    def return_ids(self, style_id, goods_id):
+    def insert_style_goods(self, style_id, goods_ids):
         try:
-            self.postgre_cursor.execute("""
-            INSERT INTO style_goods(id, id)
-            VALUES (%s, %s)
-            """, style_id, goods_id)
-            self.postgre_cursor.commit()
-            logging.info("Data successfully stored in the style_goods table.")
+            for goods_id in goods_ids:
+                self.postgre_cursor.execute("""
+                INSERT INTO style_goods(style_id, goods_id)
+                VALUES (%s, %s);
+                """, (style_id, goods_id))
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
             sys.exit(1)
-        finally:
-            self.postgre_conn.close()
-
-
-    def insert_style_goods(self, style_id, goods_id):
-        try:
-            self.postgre_cursor.execute("""
-            INSERT INTO style_goods(id, id)
-            VALUES (%s, %s);
-            """, (style_id, goods_id))
-        except psycopg2.Error as err:
-            logging.error(f"Error: {err}")
-            self.postgre_conn.rollback()
-            sys.exit(1)
-        # finally:
-        #     postgre_conn.close()
