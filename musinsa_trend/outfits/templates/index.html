@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,6 +82,7 @@
         .category-select-container button.active {
             background-color: #328f34;
         }
+
         .season-select-container button {
             margin: 0 5px;
             background-color: #4fe377;
@@ -106,7 +108,7 @@
     <script>
         //main buttons
         const chart_types = [
-            { id: 1, title: "스타일 동향"},
+            { id: 1, title: "스타일 동향" },
             { id: 2, title: "계절:스타일" },
             { id: 3, title: "카테고리:스타일" },
             { id: 4, title: "계절:스타일" },
@@ -122,6 +124,7 @@
     </script>
     <title>무신사 트렌드 분석</title>
 </head>
+
 <body>
     <div id="main-container">
         <h1>무신사 트렌드 분석</h1>
@@ -129,9 +132,9 @@
 
         <!-- Toggle buttons (populated dynamically) -->
         <div class="button-container" id="toggle-buttons"></div>
-        
+
         <!-- Category select toggle buttons will display only when button selected 3 or 4 -->
-        <div class="button-container" id="category-select-container" style = "display : none;">
+        <div class="button-container" id="category-select-container" style="display : none;">
             <ul id="category-list" style="display: flex;">
                 <!--
                 category select buttons field
@@ -140,7 +143,7 @@
             </ul>
         </div>
 
-        <div class="button-container" id="season-select-container" style = "display : none;">
+        <div class="button-container" id="season-select-container" style="display : none;">
             <ul id="season-list" style="display: flex;">
                 <!--
                 season select buttons field
@@ -148,150 +151,151 @@
             -->
             </ul>
 
-        <!-- Image for chart-->
-        <div id="img-container"></div>
+            <!-- Image for chart-->
+            <div id="img-container"></div>
 
-        <!-- Styles list -->
-        <div id="styles-container"></div>
-    </div>
-    <script>
-        // Function to make async request
-        function makeAjaxRequest(url) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            const filename_img = response.filename_img; // filename_img 속성 추출
-                            resolve(filename_img);
+            <!-- Styles list -->
+            <div id="styles-container"></div>
+        </div>
+        <script>
+            // Function to make async request
+            function makeAjaxRequest(url) {
+                return new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                const filename_img = response.filename_img; // filename_img 속성 추출
+                                resolve(filename_img);
+                            } else {
+                                reject(xhr.statusText);
+                            }
+                        }
+                    };
+                    xhr.open("GET", url, true);
+
+                    //같은 이름의 이미지를 새로고침하기 위해 다음과 같은 옵션을 헤더에 추가함
+                    xhr.setRequestHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
+                    xhr.send();
+                });
+            }
+
+            // Populate toggle buttons
+            const toggleButtonsContainer = document.getElementById('toggle-buttons');
+            async function populateToggleButtons() {
+                for (const chart_type of chart_types) {
+                    const button = document.createElement('button');
+                    button.textContent = chart_type.title;
+                    button.addEventListener('click', async () => {
+                        // Remove 'active' class from all buttons
+                        document.querySelectorAll('.button-container button').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+
+                        // Add 'active' class to the clicked button
+                        button.classList.add('active');
+
+                        // select container element
+                        var elementCategorySelect = document.getElementById('category-select-container');
+                        var elementSeasonSelect = document.getElementById('season-select-container');
+
+                        if (chart_type.id <= 2) { // get img which shows chart
+                            // wait for success async request with param:chart_type
+                            const apiUrl = `../chart?chart_type=${chart_type.id}`;
+                            const response = await makeAjaxRequest(apiUrl)
+                                .then(filename_img => { showImg(filename_img); });
+                        } else if (chart_type == 3) {
+                            //show category select container
+                            elementCategorySelect.style.display = 'block';
+                            //hide season select containter
+                            elementSeasonSelect.style.display = 'none';
+
                         } else {
-                            reject(xhr.statusText);
+                            //show season select contatiner
+                            elementSeasonSelect.style.display = 'block';
+                            //hide category select container
+                            elementCategorySelect.style.display = 'none';
                         }
                     }
-                };
-                xhr.open("GET", url, true);
-
-                //같은 이름의 이미지를 새로고침하기 위해 다음과 같은 옵션을 헤더에 추가함
-                xhr.setRequestHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-
-                xhr.send();
-            });
-        }
-
-        // Populate toggle buttons
-        const toggleButtonsContainer = document.getElementById('toggle-buttons');
-        async function populateToggleButtons() {
-            for (const chart_type of chart_types) {
-                const button = document.createElement('button');
-                button.textContent = chart_type.title;
-                button.addEventListener('click', async () => {
-                    // Remove 'active' class from all buttons
-                    document.querySelectorAll('.button-container button').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-
-                    // Add 'active' class to the clicked button
-                    button.classList.add('active');
-                    
-                    // select container element
-                    var elementCategorySelect = document.getElementById('category-select-container');
-                    var elementSeasonSelect = document.getElementById('season-select-container');
-
-                    if (chart_type.id <= 2 ) { // get img which shows chart
-                        // wait for success async request with param:chart_type
-                        const apiUrl = `../chart?chart_type=${chart_type.id}`;
-                        const response = await makeAjaxRequest(apiUrl)
-                        .then(filename_img => {showImg(filename_img);});
-                    } else if (chart_type == 3){
-                        //show category select container
-                        elementCategorySelect.style.display = 'block';
-                        //hide season select containter
-                        elementSeasonSelect.style.display = 'none';
-
-                    } else {
-                        //show season select contatiner
-                        elementSeasonSelect.style.display = 'block';
-                        //hide category select container
-                        elementCategorySelect.style.display = 'none';
-                    }
-                    
-                );
-                toggleButtonsContainer.appendChild(button);
+                    );
+                    toggleButtonsContainer.appendChild(button);
+                }
             }
-        }
 
-        async function showImg(filename_img) {
-            // Hide all chart containers
-            document.querySelectorAll('.img-container').forEach(container => {
-                container.classList.remove('active-img');
-            });
-            
-            // Show the selected chart container
-            const imgContainer = document.getElementById('img-container');
-            imgContainer.innerHTML = `
+            async function showImg(filename_img) {
+                // Hide all chart containers
+                document.querySelectorAll('.img-container').forEach(container => {
+                    container.classList.remove('active-img');
+                });
+
+                // Show the selected chart container
+                const imgContainer = document.getElementById('img-container');
+                imgContainer.innerHTML = `
                 <div class="img-container active-img">
                     <img id="chart-img" src="../static/media/${filename_img}">
                 </div>
             `;
 
-            // Fade-in effect when the image is loaded
-            const imgElement = document.getElementById('chart-img');
-            imgElement.onload = function() {
-                imgElement.style.opacity = 1;
+                // Fade-in effect when the image is loaded
+                const imgElement = document.getElementById('chart-img');
+                imgElement.onload = function () {
+                    imgElement.style.opacity = 1;
+                };
             };
-        };
-        
-        const categoryButtonsInnerHtmlTemplate = `
+
+            const categoryButtonsInnerHtmlTemplate = `
             <a href="javascript:void(0)" onclick="get_styles_by_category(this)">
                 <button id="\${category}">\${category}</button>
             </a>
         `;
-        
-        const categoryList = document.getElementById("category-list");
-        
-        categories.forEach(function(category) { // Fixed the variable name from categoryList to category
-            const li = document.createElement("li");
-            li.className = "category-list";
-            const formattedText = categoryButtonsInnerHtmlTemplate.replace(/\${category}/g, category);
-        
-            // add innerHTML
-            li.innerHTML = formattedText;
-        
-            categoryList.appendChild(li); // Fixed the variable name from styleList to categoryList
-        });
-        
-        function get_styles_by_category(element) {
-            const categoryName = element.querySelector('button').id;
-            const apiUrl = `../styles_by_category?category=${categoryName}`;
-            get_styles_page(apiUrl,categoryName);
-        };
 
-        function get_styles_by_season(element){
-            const season = element.querySelector('button').id;
-            const apiUrl = `../styles_by_season?season=${season}`;
-            get_styles_page(apiUrl,season);
-        }
+            const categoryList = document.getElementById("category-list");
 
-        function get_styles_page(apiUrl, param) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    targetElement = document.getElementById('styles-container');
-                    //remove previous content
-                    while (targetElement.firstChild) {
-                        targetElement.removeChild(targetElement.firstChild);
-                    }
-                    //import page
-                    targetElement.innerHTML = xhr.responseText;
-                }
+            categories.forEach(function (category) { // Fixed the variable name from categoryList to category
+                const li = document.createElement("li");
+                li.className = "category-list";
+                const formattedText = categoryButtonsInnerHtmlTemplate.replace(/\${category}/g, category);
+
+                // add innerHTML
+                li.innerHTML = formattedText;
+
+                categoryList.appendChild(li); // Fixed the variable name from styleList to categoryList
+            });
+
+            function get_styles_by_category(element) {
+                const categoryName = element.querySelector('button').id;
+                const apiUrl = `../styles_by_category?category=${categoryName}`;
+                get_styles_page(apiUrl, categoryName);
             };
-            xhr.open('GET', apiUrl, true);
-            xhr.send();
-        }
 
-        // Initialize the main buttons
-        populateToggleButtons();
+            function get_styles_by_season(element) {
+                const season = element.querySelector('button').id;
+                const apiUrl = `../styles_by_season?season=${season}`;
+                get_styles_page(apiUrl, season);
+            }
+
+            function get_styles_page(apiUrl, param) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        targetElement = document.getElementById('styles-container');
+                        //remove previous content
+                        while (targetElement.firstChild) {
+                            targetElement.removeChild(targetElement.firstChild);
+                        }
+                        //import page
+                        targetElement.innerHTML = xhr.responseText;
+                    }
+                };
+                xhr.open('GET', apiUrl, true);
+                xhr.send();
+            }
+
+            // Initialize the main buttons
+            populateToggleButtons();
         </script>
 </body>
+
 </html>
