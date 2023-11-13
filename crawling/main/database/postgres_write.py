@@ -36,7 +36,7 @@ class DB_Write:
     def tables_create(self):
         style_table_create = '''
             CREATE TABLE IF NOT EXISTS style (
-                style_id SERIAL PRIMARY KEY NOT NULL,
+                id SERIAL PRIMARY KEY NOT NULL,
                 subject VARCHAR(64) NOT NULL,
                 date DATE NOT NULL,
                 category VARCHAR(64) NOT NULL,
@@ -52,7 +52,7 @@ class DB_Write:
 
         goods_table_create = '''
             CREATE TABLE IF NOT EXISTS goods (
-                goods_id SERIAL PRIMARY KEY NOT NULL,
+                id SERIAL PRIMARY KEY NOT NULL,
                 name VARCHAR(64),
                 brand VARCHAR(64),
                 price INT,
@@ -65,8 +65,8 @@ class DB_Write:
 
         style_goods_table_create = '''
                 CREATE TABLE IF NOT EXISTS style_goods (
-                    CONSTRAINT fk_style FOREIGN KEY (style_id) REFERENCES style(style_id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT fk_goods FOREIGN KEY (goods_id) REFERENCES goods(goods_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    style_id INT REFERENCES style(id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    goods_id INT REFERENCES goods(id) ON DELETE CASCADE ON UPDATE CASCADE,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT NULL,
                     deleted_at TIMESTAMP DEFAULT NULL,
@@ -112,10 +112,7 @@ class DB_Write:
     def insert_style_goods(self, style_id, goods_ids):
         try:
             for goods_id in goods_ids:
-                self.postgre_cursor.execute("""
-                INSERT INTO style_goods(style_id, goods_id)
-                VALUES (%s, %s);
-                """, (style_id, goods_id))
+                self.postgre_cursor.execute("INSERT INTO style_goods (style_id, goods_id) VALUES (%s, %s);", (style_id, goods_id))
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()

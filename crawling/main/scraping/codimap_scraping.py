@@ -136,8 +136,7 @@ def codimap():
                 9. prices: 현재 가격 목록. ex)[12000, 50000, ..](list). 취소선 없는 가격.
                 10. del_prices: 삭제된 가격 목록. ex)[22000, 60000, ..](list). 취소선 있는 가격.
                 '''
-                codimap_dataset = [subject, date, category, views, img_src, tags, brands, names, prices,
-                                   del_prices]  # 데이터 리스트.
+                codimap_dataset = [subject, date, category, views, img_src, tags, brands, names, prices, del_prices]  # 데이터 리스트.
 
                 # 로그 파일 기록
                 logger.debug(codimap_dataset)
