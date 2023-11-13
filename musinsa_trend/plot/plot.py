@@ -6,7 +6,8 @@ import pandas as pd
 class Plot() :
     # Constants for managing files
     FILE_NAME_LINE = 'image00.png'
-    FILE_NAME_STACKED_BAR = 'image03.png'
+    FILE_NAME_PIE = 'image01'
+    FILE_NAME_STACKED_BAR = 'image02.png'
     SAVE_DESTINATION = '/static/media/'
 
     # font setting for 한글
@@ -16,6 +17,15 @@ class Plot() :
 
     def save_figure(figure, file_name) :
         figure.savefig(SAVE_DESTINATION + filename)
+
+    def pie(data) :
+        labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
+        sizes = [15, 30, 45, 10]
+
+        fig, ax = plt.subplots()
+        ax.pie(sizes, labels=labels)
+        
+        save_figure(fig,FILE_NAME_PIE)
 
     def line(index_season, data) :
         title = '계절별 스타일 트렌드'
