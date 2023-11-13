@@ -18,11 +18,15 @@ def index(request) :
 
 @api_view(['GET'])
 def chart(request,chart_type):
-    iilename_img = ''
-    if chart_type == 1 : # 스타일 동향 line chart
+    filename_img = ''
+    if chart_type == 0 : # 스타일 동향 line chart
         # data = some_function()
-        # Plot.stacked_bar(data)
+        # Plot.line(data)
         filename_img = Plot.FILE_NAME_LINE
+    elif chart_type == 1 : # 스타일 카테고리 별 브랜드 점유
+        data = category_brand_count()
+        Plot.pie(data)
+        filename_img = Plot.FILE_NAME_PIE
     elif chart_type == 2 : # 시즌 별 스타일 stacked bar chart
         data = season_style_trend()
         Plot.stacked_bar(data)
