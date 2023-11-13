@@ -66,11 +66,12 @@ class DB_Write:
         style_goods_table_create = '''
                 CREATE TABLE IF NOT EXISTS style_goods (
                     id SERIAL PRIMARY KEY,
-                    CONSTRAINT fk_style FOREIGN KEY (id) REFERENCES style(style_id),
-                    CONSTRAINT fk_goods FOREIGN KEY (id) REFERENCES goods(goods_id),
+                    CONSTRAINT fk_style FOREIGN KEY (id) REFERENCES style(style_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT fk_goods FOREIGN KEY (id) REFERENCES goods(goods_id)ON DELETE CASCADE ON UPDATE CASCADE,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT NULL,
-                    deleted_at TIMESTAMP DEFAULT NULL);
+                    deleted_at TIMESTAMP DEFAULT NULL
+                    );
             '''
         self.postgre_cursor.execute(style_goods_table_create)
 
@@ -78,11 +79,12 @@ class DB_Write:
     def insert_style_data(self, style_list):
         try:
             self.postgre_cursor.execute("""
-            INSERT INTO style (subject, date, category, views, url, tag) VALUES (%s, %s, %s, %s, %s, %s);
+            INSERT INTO style (subject, date, category, views, url, tag) VALUES (%s, %s, %s, %s, %s, %s) RETURNING style_id;
             """, style_list)
             self.postgre_conn.commit()
             logging.info("Data successfully stored in the style table.")
-            # return postgre_cursor.fetchone()[0]  # RETURNING style_id;
+            return self.postgre_cursor.fetchone()[0]  # RETURNING style_id;
+            # return style_id
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
@@ -94,10 +96,10 @@ class DB_Write:
 
     def insert_goods_data(self, goods_list):
         try:
-            self.postgre_cursor.executemany("""INSERT INTO goods (name, brand, price, del_price) VALUES (%s, %s, %s, %s)""", goods_list)
+            self.postgre_cursor.executemany("""INSERT INTO goods (name, brand, price, del_price) VALUES (%s, %s, %s, %s) RETURNING goods_id;""", goods_list)
             self.postgre_conn.commit()
             logging.info("Data successfully stored in the goods table.")
-            # return postgre_cursor.fetchone()[0]  # RETURNING goods_id;
+            return self.postgre_cursor.fetchone()[0]  # RETURNING goods_id;
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
