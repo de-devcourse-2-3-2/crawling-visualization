@@ -1,4 +1,8 @@
 from django.shortcuts import render
+<<<<<<< HEAD
+
+# Create your views here.
+=======
 from django.db.models import Count
 from .models import Style, StyleGoods, Goods
 from django.http import JsonResponse
@@ -112,3 +116,4 @@ def top_styles_by_season(request):
         return JsonResponse(results, safe=False)
     else:
         return JsonResponse({'error': 'need to choice season.'}, status=400)
+>>>>>>> dd11d5d
