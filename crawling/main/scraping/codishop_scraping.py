@@ -54,13 +54,22 @@ def main_page_scraping(soup):
             view_element = info_elements[1]
         dates = date_element.text.split('.')  # 코디 게시일 예) "23.11.07"
         # date = psycopg2.Date(int("20" + dates[0]), int(dates[1]), int(dates[2]))
-        when = date(int("20" + dates[0]), int(dates[1]), int(dates[2]))  # .strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
+        month = int(dates[1])
+        when = date(int("20" + dates[0]), month, int(dates[2]))  # .strftime("%Y-%m-%d")  # formatting. "YYYY-MM-DD"
+        if 3<=month<=5:
+            season = "spring"
+        elif 6<=month<=8:
+            season = "summer"
+        elif 9<=month<=11:
+            season = "fall"
+        else:
+            season = "winter"
         views = int(re.sub(r'[^0-9]', '', view_element.text))  # 코디 게시물 조회수 예) "조회수 1,100" -> 1100 추출.
 
         codi_number_element = codi.select_one("div.style-list-item__thumbnail > a") # 코디 넘버링 값
         codi_number = re.sub(r'[^0-9]', '', str(codi_number_element.attrs["onclick"]))  # ex) "goView(37149)" -> 37149 추출.\
         subject = "shop" + "-" + codi_number  # 해당 코디의 제목 예) "shop-1511".
-        return codi_number, [subject, when, category, views, img_src]
+        return codi_number, [subject, when, category, season, views, img_src]
 
 
 def scraping_goods_detail(soup):

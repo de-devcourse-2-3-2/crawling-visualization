@@ -45,6 +45,7 @@ class DB_Write:
                 date DATE NOT NULL,
                 category VARCHAR(64) NOT NULL,
                 views INT,
+                season varchar(16),
                 url TEXT,
                 tag TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -82,11 +83,12 @@ class DB_Write:
     def insert_style_data(self, style_list):
         try:
             self.postgre_cursor.execute("""
-            INSERT INTO style (subject, date, category, views, url, tag) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;
+            INSERT INTO style (subject, date, category, season, views, url, tag)
+            VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;
             """, style_list)
             self.postgre_conn.commit()
             logging.info("Data successfully stored in the style table.")
-            return self.postgre_cursor.fetchone()[0]  # RETURNING style_id;
+            return self.postgre_cursor.fetchone()[0]
         except psycopg2.Error as err:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
