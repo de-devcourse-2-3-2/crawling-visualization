@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os
 from django.urls import path
 from django.views.generic import TemplateView
@@ -27,3 +28,14 @@ urlpatterns = [
         extra_context={'schema_url':'schema_view'}
     ), name='openapi_schema_view'),
 ]
+=======
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('category_brand_count/', views.category_brand_count, name='category_brand_count'),
+    path('season-style-trend/', views.season_style_trend, name='season_style_trend'),
+    path('popular-styles/', views.popular_styles_by_category, name='popular_styles_by_category'),
+    path('top-styles/', views.top_styles_by_season, name='top_styles_by_season'),
+]
+>>>>>>> 201dcc8c2d15cc77d9cf0a0e0c181958db70b401
