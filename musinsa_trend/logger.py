@@ -1,4 +1,3 @@
-
 import logging
 
 
@@ -8,13 +7,12 @@ def setLogOptions():
         level=logging.DEBUG,
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
-        filename='scraping/app.log',  # Specify the file name for file-based logging (optional)
+        filename='app.log',  # Specify the file name for file-based logging (optional)
     )
 
     
     # Adding a console handler to display logs on the console as well
-    # console_handler = logging.StreamHandler()
-    console_handler = logging.FileHandler('scraping/app.log')
+    console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)  # Set the desired logging level for the console handler
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     console_handler.setFormatter(formatter)

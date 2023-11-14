@@ -3,9 +3,9 @@ from django.db import models
 class Style(models.Model):
     subject = models.CharField(max_length=64)
     date = models.DateField(null=False)
-    category = models.CharField(max_length=16)
+    category = models.CharField(max_length=64)
     views = models.IntegerField(default=0)
-    seson = models.CharField(max_length=8)
+    season = models.CharField(max_length=16)
     URL = models.TextField(null=True)
     tag = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,8 +16,8 @@ class Style(models.Model):
         db_table = 'tb_style'
 
 class Goods(models.Model):
-    name = models.CharField(max_length=64, null=False)
-    brand = models.CharField(max_length=64, null=False)
+    name = models.CharField(max_length=128, null=False)
+    brand = models.CharField(max_length=128, null=False)
     origin_price = models.IntegerField(null=False)
     discounted_price = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=False)
