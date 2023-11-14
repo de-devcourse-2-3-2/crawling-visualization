@@ -1,4 +1,3 @@
-# 멘토님께 반드시 코드 리뷰 요청 & 질문
 import psycopg2, time, logging, sys
 
 
@@ -93,8 +92,6 @@ class DB_Write:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
             sys.exit(1)
-        # finally:
-        #     postgre_conn.close()
 
 
 
@@ -111,8 +108,6 @@ class DB_Write:
             logging.error(f"Error: {err}")
             self.postgre_conn.rollback()
             sys.exit(1)
-        # finally:
-        #     postgre_conn.close()
 
 
     def insert_style_goods(self, style_id, goods_ids):

@@ -1,5 +1,4 @@
 from unittest import TestCase
-from ..main.database import postgres_write
 
 
 class Test(TestCase):

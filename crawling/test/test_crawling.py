@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ..main.scraping import codishop_scraping as cs
+from ..main import crawling as cs
 
 
 class CodiShopTest(TestCase):
