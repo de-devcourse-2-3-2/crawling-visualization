@@ -15,7 +15,7 @@
         }
 
         #main-container {
-            max-width: 600px;
+            max-width: 1000px;
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
@@ -45,7 +45,7 @@
             height: auto;
             margin-top: 20px;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 1s ease-in-out;
         }
 
         .button-container {
@@ -98,20 +98,19 @@
             background-color: #328f34;
         }
 
-        .loading-img {
-            display: none;
-            width: 50px;
-            height: 50px;
-            margin: 20px auto;
+        img {
+            width: 1000px; 
+            height: auto; 
         }
     </style>
     <script>
         //main buttons
         const chart_types = [
             { id: 1, title: "스타일 동향" },
-            { id: 2, title: "계절:스타일" },
-            { id: 3, title: "카테고리:스타일" },
-            { id: 4, title: "계절:스타일" },
+            { id: 2, title: "스타일:브랜드" },
+            { id: 3, title: "계절:스타일" },
+            { id: 4, title: "카테고리:스타일" },
+            { id: 5, title: "계절:스타일" },
         ];
         //sub buttons
         const categories = [
@@ -150,13 +149,14 @@
                 it will be dynamically generated
             -->
             </ul>
-
-            <!-- Image for chart-->
-            <div id="img-container"></div>
-
-            <!-- Styles list -->
-            <div id="styles-container"></div>
         </div>
+
+        <!-- Image for chart-->
+        <div id="img-container"></div>
+
+        <!-- Styles list -->
+        <div id="styles-container"></div>
+
         <script>
             // Function to make async request
             function makeAjaxRequest(url) {
@@ -201,18 +201,18 @@
                         var elementCategorySelect = document.getElementById('category-select-container');
                         var elementSeasonSelect = document.getElementById('season-select-container');
 
-                        if (chart_type.id <= 2) { // get img which shows chart
+                        if (chart_type.id <= 3) { // get img that shows the chart
                             // wait for success async request with param:chart_type
                             const apiUrl = `../chart?chart_type=${chart_type.id}`;
                             const response = await makeAjaxRequest(apiUrl)
                                 .then(filename_img => { showImg(filename_img); });
-                        } else if (chart_type == 3) {
+                        } else if (chart_type == 4) { // style list by category
                             //show category select container
                             elementCategorySelect.style.display = 'block';
                             //hide season select containter
                             elementSeasonSelect.style.display = 'none';
 
-                        } else {
+                        } else { // style list  by season
                             //show season select contatiner
                             elementSeasonSelect.style.display = 'block';
                             //hide category select container

@@ -10,9 +10,9 @@ from . import views
 
 urlpatterns = [
     path('index/', views.index, name='index'),
-    path('chart', views.chart, {'chart_type' : 0}, name='chart'),
-    path('styles_by_category', views.stylecat, {'category': '아메카지'}, name='styles_by_season'),
-    path('styles_by_season', views.stylesea, {'season': 'spring'}, name='styles_by_season'),
+    path('chart', views.chart, name='chart'),
+    path('styles_by_category', views.stylecat, name='styles_by_season'),
+    path('styles_by_season', views.stylesea, name='styles_by_season'),
     
     # Generic schema view of app
     path('schema_view/', get_schema_view(

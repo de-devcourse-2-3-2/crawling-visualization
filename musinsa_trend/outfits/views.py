@@ -19,22 +19,32 @@ def index(request) :
     return render(request,'index.html')
 
 @api_view(['GET'])
-def chart(request,chart_type):
+def chart(request):
     filename_img = ''
-    if chart_type == 0 : # 스타일 동향 line chart
+    msg = ''
+    plot = Plot()
+    utils = Utils()
+    chart_type = request.GET.get('chart_type', 1)
+    category = request.GET.get('category', '스포티')
+    if chart_type == '1' : # 스타일 동향 line chart
+        # 로직이 구현되지 않음
         # data = some_function()
         # Plot.line(data)
         filename_img = Plot.FILE_NAME_LINE
-    elif chart_type == 1 : # 스타일 카테고리 별 브랜드 점유
+    elif chart_type == '2' : # 스타일 카테고리 별 브랜드 점유 Pie chart
         raw_data = category_brand_count()
-        data = Utils.get_data_for_pie(raw_data)
-        Plot.pie(data)
-        filename_img = Plot.FILE_NAME_PIE
-    elif chart_type == 2 : # 시즌 별 스타일 stacked bar chart
+        # Or you use sample data with alternative code below
+        # raw_data = Utils.SAMPLE_PIE
+        data = Utils.get_data_for_pie(category,raw_data)
+        if plot.pie(data) :
+            filename_img = Plot.FILE_NAME_PIE
+    elif chart_type == '3' : # 시즌 별 스타일 stacked bar chart
         raw_data = season_style_trend()
-        data = Utils.get_data_for_stacked_bar(raw_data)
-        Plot.stacked_bar(data)
-        filename_img = Plot.FILE_NAME_STACKED_BAR
+        # Or you use sample data with alternative code below
+        # raw_data = Utils.SAMPLE_STACKED_BAR
+        data = utils.get_data_for_stacked_bar(raw_data)
+        if plot.stacked_bar(data) :
+            filename_img = plot.FILE_NAME_STACKED_BAR
     return Response({'filename_img' : filename_img})
 
 @api_view(['GET'])
