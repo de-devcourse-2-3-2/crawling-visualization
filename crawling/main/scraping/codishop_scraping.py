@@ -109,7 +109,8 @@ def main_page_crawling():
         soup = set_driver_and_soup("https://www.musinsa.com/app/styles/lists")  # 코디샵 전체 페이지
         total_pages_number = int(soup.find("span", "totalPagingNum").text)
 
-        for i in range(1, total_pages_number + 1):
+        # for i in range(1, total_pages_number + 1):
+        for i in range(1, 5):
             soup = set_driver_and_soup(f"https://www.musinsa.com/app/codimap/lists?page={i}")
             codi_number, style_data_list = main_page_scraping(soup)  # db write 단위!
 

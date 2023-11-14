@@ -34,6 +34,10 @@ class DB_Write:
 
 
     def tables_create(self):
+        self.postgre_cursor.execute("DROP TABLE IF EXISTS style_goods;")
+        self.postgre_cursor.execute("DROP TABLE IF EXISTS style;")
+        self.postgre_cursor.execute("DROP TABLE IF EXISTS goods;")
+
         style_table_create = '''
             CREATE TABLE IF NOT EXISTS style (
                 id SERIAL PRIMARY KEY NOT NULL,
@@ -41,8 +45,8 @@ class DB_Write:
                 date DATE NOT NULL,
                 category VARCHAR(64) NOT NULL,
                 views INT,
-                url VARCHAR(512),
-                tag VARCHAR(512),
+                url TEXT,
+                tag TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT NULL,
                 deleted_at TIMESTAMP DEFAULT NULL);
@@ -53,8 +57,8 @@ class DB_Write:
         goods_table_create = '''
             CREATE TABLE IF NOT EXISTS goods (
                 id SERIAL PRIMARY KEY NOT NULL,
-                name VARCHAR(64),
-                brand VARCHAR(64),
+                name VARCHAR(128),
+                brand VARCHAR(128),
                 price INT,
                 del_price INT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -78,7 +82,7 @@ class DB_Write:
     def insert_style_data(self, style_list):
         try:
             self.postgre_cursor.execute("""
-            INSERT INTO style (subject, date, category, views, url, tag) VALUES (%s, %s, %s, %s, %s, %s) RETURNING style_id;
+            INSERT INTO style (subject, date, category, views, url, tag) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;
             """, style_list)
             self.postgre_conn.commit()
             logging.info("Data successfully stored in the style table.")
@@ -96,7 +100,7 @@ class DB_Write:
         try:
             goods_ids = []
             for goods in goods_list:
-                self.postgre_cursor.execute("""INSERT INTO goods (name, brand, price, del_price) VALUES (%s, %s, %s, %s) RETURNING goods_id;""", goods)
+                self.postgre_cursor.execute("""INSERT INTO goods (name, brand, price, del_price) VALUES (%s, %s, %s, %s) RETURNING id;""", goods)
                 self.postgre_conn.commit()
                 logging.info("Data successfully stored in the goods table.")
                 goods_ids.append(self.postgre_cursor.fetchone()[0])  # RETURNING goods_id;
