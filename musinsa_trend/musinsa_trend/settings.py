@@ -52,8 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
+    'rest_framework',
+    'outfits'
+=======
     # app
     'outfits',
+>>>>>>> 201dcc8c2d15cc77d9cf0a0e0c181958db70b401
 ]
 
 MIDDLEWARE = [
