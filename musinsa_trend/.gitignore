@@ -1,0 +1,90 @@
+# Default ignored files
+
+app.log
+venv
+mysite/**/__pycache__
+mysite/**/migrations/__pycache__
+
+# personal ignored files
+Pipfile
+Pipfile.lock
+
+#django
+secrets.json
+
+*.py[cod]
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.sqlite3
+*.db
+db.sqlite3
+*.log
+*.pot
+*.mo
+*.pem
+*.key
+.mypy_cache/
+.django_cache/
+.vscode/
+.idea/
+*.swo
+*.swp
+*~
+.DS_Store
+Thumbs.db
+db.sqlite3-journal
+celerybeat-schedule
+*.sage.py
+
+# media
+media/
+
+# static
+/static/
+*.scssc
+
+# Ignore all local configurations:
+local_settings.py
+settings.py
+db.cnf
+
+# If using Docker, you may want to ignore various Docker-related files.
+# Note: Consider including production Dockerfiles, if using them.
+**/Dockerfile.*
+**/docker-compose.*.yml
+.dockerenv
+.dockerignore
+**/.dockerignore
+
+# If using pytest
+.pytest_cache/
+coverage.xml
+*.cover
+.hypothesis/
+.cache
+nosetests.xml
+coverage/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+jupyter_notebooks/
+*.ipynb
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
