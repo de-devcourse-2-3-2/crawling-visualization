@@ -29,8 +29,8 @@ def main():
     CPW = cpw.DB_Write()
     CPW.tables_create()
 
-    codishop_dataset = pd.read_csv('codishop(2023-11-09_12h_2m).csv', encoding='utf-16')
-    codimap_dataset = pd.read_csv('codimap(2023-11-10_10h_19m).csv', encoding='utf-16')
+    codishop_dataset = pd.read_csv('/home/hoon/ve/v_fapi/h/dev_1st_project/crawling/csv_to_db/codishop(2023-11-09_12h_2m).csv', encoding='utf-16')
+    codimap_dataset = pd.read_csv('/home/hoon/ve/v_fapi/h/dev_1st_project/crawling/csv_to_db/codimap(2023-11-10_10h_19m).csv', encoding='utf-16')
     dataset = pd.concat([codishop_dataset, codimap_dataset], ignore_index=True) # 전체 데이터셋
 
     for i in range(len(dataset)):
