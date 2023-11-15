@@ -14,7 +14,7 @@ class DB_Write:
             'password': 1234,
             'host': 'localhost',  # for local environment
             'port': 5432,
-            'database': 'devcourse1',
+            'database': 'musinsa',
             'options': "-c client_encoding=utf8",
         }
 
