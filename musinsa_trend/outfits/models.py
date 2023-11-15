@@ -18,8 +18,8 @@ class Style(models.Model):
 class Goods(models.Model):
     name = models.CharField(max_length=128, null=False)
     brand = models.CharField(max_length=128, null=False)
-    origin_price = models.IntegerField(null=False)
-    discounted_price = models.IntegerField(null=True)
+    price = models.IntegerField(null=False)
+    del_price = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=False)
     deleted_at = models.DateTimeField(null=True)
     updated_at = models.DateTimeField(null=True)
