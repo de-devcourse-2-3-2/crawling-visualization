@@ -2,22 +2,6 @@ from django.db import models
 
 class Style(models.Model):
     subject = models.CharField(max_length=64)
-<<<<<<< HEAD
-    date = models.DateField(null=False)
-    category = models.CharField(max_length=64)
-=======
-<<<<<<< HEAD
-    date = models.DateField() # datetime->date 
-    category = models.CharField(max_length=16)
->>>>>>> 17f16821fede7b71dece7f89e6ef0e0896ba669b
-    views = models.IntegerField(default=0)
-    season = models.CharField(max_length=16)
-    URL = models.TextField(null=True)
-    tag = models.TextField(null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    deleted_at = models.DateTimeField()
-    updated_at = models.DateTimeField(auto_now=True)
-=======
     date = models.DateField(null=False)
     category = models.CharField(max_length=64)
     views = models.IntegerField(default=0)
@@ -29,7 +13,7 @@ class Style(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'tb_style'
+        db_table = 'style'
 
 class Goods(models.Model):
     name = models.CharField(max_length=128, null=False)
@@ -41,7 +25,7 @@ class Goods(models.Model):
     updated_at = models.DateTimeField(null=True)
 
     class Meta:
-        db_table = 'tb_goods'
+        db_table = 'goods'
 
 class StyleGoods(models.Model):
     id = models.AutoField(primary_key=True)  
@@ -49,5 +33,4 @@ class StyleGoods(models.Model):
     style = models.ForeignKey(Style, on_delete=models.CASCADE)  
 
     class Meta:
-        db_table = 'tb_style_goods'
->>>>>>> 201dcc8c2d15cc77d9cf0a0e0c181958db70b401
+        db_table = 'style_goods'

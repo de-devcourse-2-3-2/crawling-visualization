@@ -1,7 +1,4 @@
 from django.shortcuts import render
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -59,12 +56,8 @@ def stylecat(request):
 def stylesea(request) :
     data = top_styles_by_season(request)
     return render(request, 'style_list.html', data)
-=======
-<<<<<<< HEAD
 
 # Create your views here.
-=======
->>>>>>> 17f16821fede7b71dece7f89e6ef0e0896ba669b
 from django.db.models import Count
 from .models import Style, StyleGoods, Goods
 from django.http import JsonResponse
@@ -177,10 +170,4 @@ def top_styles_by_season(request):
         logger.info(f'*******top_styles_by_season : {results} 이 검색되었습니다.')
         return JsonResponse(results, safe=False)
     else:
-<<<<<<< HEAD
         return JsonResponse({'error': 'need to choice season.'}, status=400)
-=======
-        return JsonResponse({'error': 'need to choice season.'}, status=400)
->>>>>>> dd11d5d
->>>>>>> 201dcc8c2d15cc77d9cf0a0e0c181958db70b401
->>>>>>> 17f16821fede7b71dece7f89e6ef0e0896ba669b
