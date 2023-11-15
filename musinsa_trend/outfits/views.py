@@ -172,21 +172,39 @@ logger = logging.getLogger(__name__)
 #########################################       NEW      #################################################
 from django.shortcuts import render
 from .models import Style, StyleGoods, Goods
-from django.db.models import Count
+from django.db.models import Count, F, Value
+from django.db.models.functions import Coalesce
 
 def top_styles(request):
     # 여기에 기본 페이지 로직 구현
     return render(request, 'top_styles.html')
 
 def top_styles_by_season(request, season):
+    print('************season :', season)
     styles = Style.objects.filter(season=season).annotate(num_views=Count('views')).order_by('-num_views')[:5]
     context = {'styles': []}
-    for style in styles:
-        goods_list = StyleGoods.objects.filter(style=style).select_related('goods')[:3]
-        goods_data = [{
-            'name': sg.goods.name,
-            'brand': sg.goods.brand,
-            'price': sg.goods.discounted_price if sg.goods.discounted_price else sg.goods.origin_price
-        } for sg in goods_list]
-        context['styles'].append({'style': style, 'goods': goods_data})
+    if styles.exists():  # Check if the queryset is not empty
+        for style in styles:
+            # print('*****************',style)
+            goods_list = StyleGoods.objects.filter(style=style)[:3]
+            # goods_list = StyleGoods.objects.filter(style=style).annotate(final_price=Coalesce('goods__del_price', 'goods__price')).values('goods__name', 'goods__brand', 'final_price')[:3]
+            # print('!!!!!',goods_list)
+            goods_data = []
+            for sg in goods_list:
+                if hasattr(sg.goods, 'del_price') and sg.goods.del_price is not None:
+                    price = sg.goods.del_price
+                else:
+                    price = sg.goods.price
+                goods_data.append({
+                    'name': sg.goods.name,
+                    'brand': sg.goods.brand,
+                    'price': price
+                })
+        print('@@@@',goods_data)
+        context['styles'].append(goods_data)
+        # This print statement will now be inside the if block to ensure 'style' is defined
+        print('************', style)
+    else:
+        print("No styles found for the season:", season)
+    
     return render(request, 'top_styles_by_season.html', context)

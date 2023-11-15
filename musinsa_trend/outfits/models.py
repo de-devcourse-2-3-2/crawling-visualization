@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class Style(models.Model):
     subject = models.CharField(max_length=64)
@@ -18,8 +19,8 @@ class Style(models.Model):
 class Goods(models.Model):
     name = models.CharField(max_length=128, null=False)
     brand = models.CharField(max_length=128, null=False)
-    origin_price = models.IntegerField(null=False)
-    discounted_price = models.IntegerField(null=True)
+    price = models.IntegerField(null=False)
+    del_price = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=False)
     deleted_at = models.DateTimeField(null=True)
     updated_at = models.DateTimeField(null=True)
@@ -28,9 +29,12 @@ class Goods(models.Model):
         db_table = 'goods'
 
 class StyleGoods(models.Model):
-    id = models.AutoField(primary_key=True)  
-    goods = models.ForeignKey(Goods, on_delete=models.CASCADE)  
-    style = models.ForeignKey(Style, on_delete=models.CASCADE)  
+    style = models.ForeignKey(Style, on_delete=models.CASCADE)
+    goods = models.ForeignKey(Goods, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True)
 
     class Meta:
         db_table = 'style_goods'
+        # unique_together = (('style_id', 'goods_id'),)
