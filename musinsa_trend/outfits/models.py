@@ -3,9 +3,15 @@ from django.db import models
 class Style(models.Model):
     subject = models.CharField(max_length=64)
 <<<<<<< HEAD
+    date = models.DateField(null=False)
+    category = models.CharField(max_length=64)
+=======
+<<<<<<< HEAD
     date = models.DateField() # datetime->date 
     category = models.CharField(max_length=16)
+>>>>>>> 17f16821fede7b71dece7f89e6ef0e0896ba669b
     views = models.IntegerField(default=0)
+    season = models.CharField(max_length=16)
     URL = models.TextField(null=True)
     tag = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
