@@ -41,7 +41,7 @@ class Plot() :
         plt.title(title)
         plt.xlabel('계절')
         plt.ylabel('등록된 코디 수')
-        plt.xticks(index_seasons)
+        plt.xticks(index_season)
         plt.legend()
         plt.grid(True)
         

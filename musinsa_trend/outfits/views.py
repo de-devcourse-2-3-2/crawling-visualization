@@ -96,7 +96,7 @@ def season_style_trend():
     """
     # request 없이 계절 모두 구현 되도록 변경 
     seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-    response_data = {}
+    response_data = {'Spring': {} , 'Summer' : {}, 'Autumn' : {}, 'Winter' : {}}
 
     for season in seasons:
         top_categories = list(Style.objects.filter(
@@ -111,18 +111,17 @@ def season_style_trend():
             category__in=[category['category'] for category in top_categories]
         ).count()
 
+        response_data[season] = {
+            'top_categories': top_categories,
+            'other_count': other_count
+            }
+
     logger.info(
         f'********season_style_trend의 검색결과는 아래와 같습니다.\n'
         f'season : {season}\n'
         f'styles : {top_categories}\n'
         f'other_count : {other_count}\n'
     )
-
-    response_data = {
-        'top_categories': top_categories,
-        'other_count': other_count,
-    }
-    
     return response_data
 
 def popular_styles_by_category(request):
