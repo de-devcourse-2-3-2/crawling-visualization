@@ -53,7 +53,8 @@ class Utils:
 
         for i, season in enumerate(raw_data.values()):
             for top_cat in season["top_categories"] :
-                categories_count[top_cat["category"]][i] = top_cat["count"]
+                for x in top_cat :
+                    categories_count[x['category']][i] = x["count"]
             categories_count["기타"][i] = season["other_count"]
         
         return (categories_count, ['봄', '여름', '가을', '겨울'])
