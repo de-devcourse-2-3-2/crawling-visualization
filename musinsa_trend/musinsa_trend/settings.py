@@ -52,8 +52,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     # app
     'outfits',
+    'plot',
 ]
 
 MIDDLEWARE = [
@@ -97,7 +99,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',   
-        'PORT': '5432',
+        'PORT': '',
     }
 }
 

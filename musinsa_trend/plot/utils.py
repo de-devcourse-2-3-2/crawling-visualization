@@ -51,12 +51,20 @@ class Utils:
         categories_count = {k : [0,0,0,0] for k in self.ALL_CATEGORIES}
         categories_count["기타"] = [0,0,0,0]
 
+        # for i, season in enumerate(raw_data.values()):
+        #     for top_cat in season["top_categories"] :
+        #         for x in top_cat.items() :
+        #             print('-'*80)
+        #             print(top_cat)
+        #             print('-'*80)
+        #             categories_count[x['category']][i] = x['count']
+        #     categories_count["기타"][i] = season["other_count"]
+        
         for i, season in enumerate(raw_data.values()):
             for top_cat in season["top_categories"] :
-                for x in top_cat :
-                    categories_count[x['category']][i] = x["count"]
-            categories_count["기타"][i] = season["other_count"]
-        
+                categories_count[top_cat["category"]][i] = top_cat["count"]
+                categories_count["기타"][i] = season["other_count"]
+
         return (categories_count, ['봄', '여름', '가을', '겨울'])
 
     # EXPECTED RAW DATA FROM season_style_trend()

@@ -4,6 +4,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from plot.plot import Plot
 from plot.utils import Utils
+from django.db.models import Count
+from .models import Style, StyleGoods, Goods
+import logging
+from logger import setLogOptions
+
+setLogOptions()
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -40,6 +47,9 @@ def chart(request):
             filename_img = Plot.FILE_NAME_PIE
     elif chart_type == '3' : # 시즌 별 스타일 stacked bar chart
         raw_data = season_style_trend()
+        # print('-'*50)
+        # print(raw_data)
+        # print('-'*50)
         # Or you use sample data with alternative code below
         # raw_data = Utils.SAMPLE_STACKED_BAR
         data = utils.get_data_for_stacked_bar(raw_data)
@@ -56,17 +66,6 @@ def stylecat(request):
 def stylesea(request) :
     data = top_styles_by_season(request)
     return render(request, 'style_list.html', data)
-
-# Create your views here.
-from django.db.models import Count
-from .models import Style, StyleGoods, Goods
-from django.http import JsonResponse
-
-import logging
-from logger import setLogOptions
-
-setLogOptions()
-logger = logging.getLogger(__name__)
 
 def category_brand_count():
     """
@@ -95,8 +94,8 @@ def season_style_trend():
     나머지에 대해서는 합해서 반환
     """
     # request 없이 계절 모두 구현 되도록 변경 
-    seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-    response_data = {'Spring': {} , 'Summer' : {}, 'Autumn' : {}, 'Winter' : {}}
+    seasons = ['spring', 'summer', 'fall', 'winter']
+    response_data = {'spring': {} , 'summer' : {}, 'fall' : {}, 'winter' : {}}
 
     for season in seasons:
         top_categories = list(Style.objects.filter(

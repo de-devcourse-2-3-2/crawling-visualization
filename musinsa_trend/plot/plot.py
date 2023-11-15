@@ -3,7 +3,7 @@ import matplotlib.patheffects as path_effects
 from matplotlib import font_manager
 from pathlib import Path
 import pandas as pd
-from .utils import Utils 
+from .utils import Utils
 
 class Plot() :
     # Constants for managing files
@@ -11,11 +11,12 @@ class Plot() :
     FILE_NAME_PIE = 'image02.png'
     FILE_NAME_STACKED_BAR = 'image03.png'
     SAVE_DESTINATION = str(Path.cwd()) + '/plot/static/media/'
-
-    # font setting for 한글
-    font_path = str(Path.cwd()) + '/plot/static/resources/NanumGothic.ttf'
-    custom_font = font_manager.FontProperties(fname=font_path)
-    plt.rcParams['font.family'] = custom_font.get_name()
+    # font_manager._rebuild()
+    def font_setting(self, plt):
+        # font setting for 한글
+        font_path = 'C:\\Windows\\Fonts\\malgunsl.ttf'
+        custom_font = font_manager.FontProperties(fname=font_path)
+        plt.rcParams['font.family'] = custom_font.get_name()
 
     def get_file_name_line(self):
         return self.FILE_NAME_LINE
@@ -45,20 +46,27 @@ class Plot() :
         plt.legend()
         plt.grid(True)
         
+        #font
+        self.font_setting(plt)
+
         #save it
         self.save_figure(plt,self.FILE_NAME_LINE)
+        plt.close()
         return True
 
     def pie(self,data) :
         brands,totals = data
         fig, ax = plt.subplots()
         ax.pie(totals, labels=brands)
+        #font
+        self.font_setting(plt)
         self.save_figure(fig, self.FILE_NAME_PIE)
+        plt.close()
         return True
 
     def stacked_bar(self,data) :
         # make it dataframe
-        df = pd.DataFrame(data[0],index = data[1])
+        df = pd.DataFrame(data[0], index = data[1])
         # get style category names
         style_names = list(Utils.ALL_CATEGORIES)
         style_names.append('기타')
@@ -88,7 +96,9 @@ class Plot() :
                 labels.append(text)
             # create labels
             ax.bar_label(c, labels=labels, label_type='center', fontsize=16,color='w', path_effects=[path_effects.withStroke(linewidth=3, foreground='k')])
-
+        #font
+        self.font_setting(plt)
         # save it
         self.save_figure(ax.get_figure(),self.FILE_NAME_STACKED_BAR)
+        plt.close()
         return True
