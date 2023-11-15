@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Styles by Season</title>
+    <style>
+        /* 추가된 드랍다운 스타일 */
+        .dropdown-label {
+            font-weight: bold;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content div {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content div:hover {
+            background-color: #f1f1f1;
+        }
+        .show {display:block;}
+    </style>
+</head>
+<body>
+
+  <h1>시즌 별 최상위 스타일</h1>
+  <div class="dropdown-label">Seasons</div>
+  <div class="dropdown">
+      <button class="dropbtn" onclick="toggleDropdown()">Select a season</button>
+      <div id="myDropdown" class="dropdown-content">
+          <div onclick="selectSeason('spring')">Spring</div>
+          <div onclick="selectSeason('summer')">Summer</div>
+          <div onclick="selectSeason('fall')">Fall</div>
+          <div onclick="selectSeason('winter')">Winter</div>
+      </div>
+  </div>
+
+  <script>
+      // 드롭다운 메뉴를 표시하거나 숨기는 함수
+      function toggleDropdown() {
+          document.getElementById("myDropdown").classList.toggle("show");
+      }
+
+      // 사용자가 시즌을 선택하면 해당 시즌의 스타일 페이지로 이동
+      function selectSeason(season) {
+          window.location.href = '/outfits/top-styles/' + season + '/';
+      }
+
+      // 페이지 외부를 클릭하면 드롭다운 닫기
+      window.onclick = function(event) {
+          if (!event.target.matches('.dropbtn')) {
+              var dropdowns = document.getElementsByClassName("dropdown-content");
+              var i;
+              for (i = 0; i < dropdowns.length; i++) {
+                  var openDropdown = dropdowns[i];
+                  if (openDropdown.classList.contains('show')) {
+                      openDropdown.classList.remove('show');
+                  }
+              }
+          }
+      }
+  </script>
+
+</body>
+</html>

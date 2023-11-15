@@ -2,8 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from plot.plot import Plot
-from plot.utils import Utils
+
 from django.db.models import Count
 from .models import Style, StyleGoods, Goods
 import logging
@@ -174,6 +173,10 @@ logger = logging.getLogger(__name__)
 from django.shortcuts import render
 from .models import Style, StyleGoods, Goods
 from django.db.models import Count
+
+def top_styles(request):
+    # 여기에 기본 페이지 로직 구현
+    return render(request, 'top_styles.html')
 
 def top_styles_by_season(request, season):
     styles = Style.objects.filter(season=season).annotate(num_views=Count('views')).order_by('-num_views')[:5]

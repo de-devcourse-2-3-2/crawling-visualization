@@ -26,6 +26,9 @@ urlpatterns = [
     #     template_name='openapi_schema.html',
     #     extra_context={'schema_url':'schema_view'}
     # ), name='openapi_schema_view'),
+    # 기본 페이지 경로: 계절이 선택되지 않았을 때
+    path('top-styles/', views.top_styles, name='top_styles'),
+    # 계절이 선택되었을 때의 경로
     path('top-styles/<str:season>/', views.top_styles_by_season, name='top_styles_by_season'),
 ]
 

@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'rest_framework',
     # app
     'outfits',
-    'plot',
 ]
 
 MIDDLEWARE = [
@@ -92,14 +91,21 @@ WSGI_APPLICATION = 'musinsa_trend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'musinsa',
+#         'USER': 'postgres',
+#         'PASSWORD': '1234',
+#         'HOST': 'localhost',   
+#         'PORT': '',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'musinsa',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',   
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
