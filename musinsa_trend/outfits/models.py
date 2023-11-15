@@ -6,7 +6,7 @@ class Style(models.Model):
     category = models.CharField(max_length=64)
     views = models.IntegerField(default=0)
     season = models.CharField(max_length=16)
-    URL = models.TextField(null=True)
+    url = models.TextField(null=True)
     tag = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True)
