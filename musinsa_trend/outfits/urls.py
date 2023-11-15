@@ -13,11 +13,6 @@ urlpatterns = [
     path('chart', views.chart, name='chart'),
     path('styles_by_category', views.stylecat, name='styles_by_season'),
     path('styles_by_season', views.stylesea, name='styles_by_season'),
-    # 추가?
-    path('category_brand_count/', views.category_brand_count, name='category_brand_count'),
-    path('season-style-trend/', views.season_style_trend, name='season_style_trend'),
-    path('popular-styles/', views.popular_styles_by_category, name='popular_styles_by_category'),
-    path('top-styles/', views.top_styles_by_season, name='top_styles_by_season'),
     
     # Generic schema view of app
     path('schema_view/', get_schema_view(
