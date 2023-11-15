@@ -1,8 +1,9 @@
 {% for style in styles %}
 <div style="border: 2px solid skyblue; border-radius: 15px; padding: 10px; margin-bottom: 10px;">
-    <img src="{{ style.style.url }}" alt="Style Image">
-    <h2>{{ style.style.subject }}</h2>
-    <p>{{ style.style.tag }}</p>
+    <img src="{{ style.url }}" alt="Style Image">
+<!--    <img src="{{ style.url|slice:"2:" }}" alt="Image">-->
+    <h2>{{ style.subject }}</h2>
+    <p>{{ style.tag }}</p>
     <ul>
         {% for good in style.goods %}
         <li>{{ good.name }} - {{ good.brand }} - ${{ good.price }}</li>

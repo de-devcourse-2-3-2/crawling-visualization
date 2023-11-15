@@ -189,21 +189,20 @@ def top_styles_by_season(request, season):
             goods_list = StyleGoods.objects.filter(style=style)[:3]
             # goods_list = StyleGoods.objects.filter(style=style).annotate(final_price=Coalesce('goods__del_price', 'goods__price')).values('goods__name', 'goods__brand', 'final_price')[:3]
             # print('!!!!!',goods_list)
-            goods_data = []
             for sg in goods_list:
                 if hasattr(sg.goods, 'del_price') and sg.goods.del_price is not None:
                     price = sg.goods.del_price
                 else:
                     price = sg.goods.price
-                goods_data.append({
-                    'name': sg.goods.name,
-                    'brand': sg.goods.brand,
-                    'price': price
-                })
-        print('@@@@',goods_data)
-        context['styles'].append(goods_data)
+                context['styles'].append(
+                    {
+                        'name': sg.goods.name,
+                        'brand': sg.goods.brand,
+                        'price': price
+                    }
+                )
+        # print('@@@@',context['styles'])
         # This print statement will now be inside the if block to ensure 'style' is defined
-        print('************', style)
     else:
         print("No styles found for the season:", season)
     
