@@ -4,6 +4,7 @@ from matplotlib import font_manager
 from pathlib import Path
 import pandas as pd
 from .utils import Utils
+from datetime import datetime
 
 class Plot() :
     # Constants for managing files
@@ -30,28 +31,29 @@ class Plot() :
     def save_figure(self,figure, file_name) :
         figure.savefig(self.SAVE_DESTINATION + file_name)
 
-    def line(self,index_season, data) :
-        title = '계절별 스타일 트렌드'
+    def line(self, date_list, category_views_dict) :
+        date_objects = [datetime.strptime(date, "%Y-%m") for date in date_list]
 
-        # create plot
-        for entry in data:
-            dataset_name, values = entry.popitem()
-            plt.plot(values, marker='o', label=dataset_name)
+        # 그래프 생성
+        plt.figure(figsize=(15, 10))
 
-        # Style configurations
-        plt.title(title)
-        plt.xlabel('계절')
-        plt.ylabel('등록된 코디 수')
-        plt.xticks(index_season)
-        plt.legend()
+        for category, views in category_views_dict.items():
+            plt.plot(date_objects, views, marker='o', label=category)
+
+        plt.title('Monthly Views by Category')
+        plt.xlabel('Date')
+        plt.ylabel('Views')
+        plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
         plt.grid(True)
-        
+        # 지수 표기법이 아닌 일반 표기법 설정
+        plt.ticklabel_format(axis='y', style='plain')
+
         #font
         self.font_setting(plt)
 
-        #save it
-        self.save_figure(plt,self.FILE_NAME_LINE)
-        plt.close()
+        # 그래프 저장
+        self.save_figure(plt, self.FILE_NAME_LINE)
+
         return True
 
     def pie(self,data) :
