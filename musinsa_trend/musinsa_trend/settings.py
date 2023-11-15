@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'musinsa_trend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
+        'NAME': 'musinsa',
         'USER': 'postgres',
         'PASSWORD': 1234,
-        'HOST': 'musinsa',   
+        'HOST': 'localhost',   
         'PORT': '',         
     }
 }
