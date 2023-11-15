@@ -28,9 +28,9 @@ class Goods(models.Model):
         db_table = 'goods'
 
 class StyleGoods(models.Model):
-    id = models.AutoField(primary_key=True)  
-    goods = models.ForeignKey(Goods, on_delete=models.CASCADE)  
-    style = models.ForeignKey(Style, on_delete=models.CASCADE)  
+    id = models.AutoField(primary_key=True)
+    style_id = models.ForeignKey(Style, on_delete=models.CASCADE)
+    goods_id = models.ForeignKey(Goods, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'style_goods'
