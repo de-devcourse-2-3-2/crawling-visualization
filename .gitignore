@@ -1,9 +1,14 @@
 # Default ignored files
 .idea
-*.pyc
 app.log
 venv
+mysite/**/__pycache__
+mysite/**/migrations/__pycache__
 
 # personal ignored files
 Pipfile
 Pipfile.lock
+musinsa_trend/plot/__pycache__/plot.cpython-312.pyc
+*.pyc
+.idea
+venv
