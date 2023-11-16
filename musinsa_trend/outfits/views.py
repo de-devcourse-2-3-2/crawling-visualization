@@ -176,40 +176,15 @@ from django.db.models import Count, F, Value
 from django.db.models.functions import Coalesce
 
 def top_styles(request):
-    # 여기에 기본 페이지 로직 구현
+    """
+    시즌 조회하는 기본 페이지 로직 구현
+    """
     return render(request, 'top_styles.html')
 
-# def top_styles_by_season(request, season):
-#     print('****', season,'에 대한 조회입니다.')
-#     styles = Style.objects.filter(season=season).annotate(num_views=Count('views')).order_by('-num_views')[:5]
-#     context = {'styles': [], 'goods':[]}
-#     if styles.exists():  # Check if the queryset is not empty
-#         for style in styles:
-#             goods_list = StyleGoods.objects.filter(style=style)[:3]
-#             # goods_list = StyleGoods.objects.filter(style=style).annotate(final_price=Coalesce('goods__del_price', 'goods__price')).values('goods__name', 'goods__brand', 'final_price')[:3]
-#             print('**** goods_list는 다음과 같아요\n\n',goods_list)
-#             for sg in goods_list:
-#                 if hasattr(sg.goods, 'del_price') and sg.goods.del_price is not None:
-#                     price = sg.goods.del_price
-#                 else:
-#                     price = sg.goods.price
-#                 context['goods'].append(
-#                     {
-#                         'name': sg.goods.name,
-#                         'brand': sg.goods.brand,
-#                         'price': price
-#                     }
-#                 )
-#         # print('@@@@',context['styles'])
-#         print('@@@@',context)
-#         # This print statement will now be inside the if block to ensure 'style' is defined
-#     else:
-#         print("No styles found for the season:", season)
-    
-#     return render(request, 'top_styles_by_season.html', context)
-
 def top_styles_by_season(request, season):
-    # 특정 시즌에서 조회수가 높은 순으로 Style을 조회
+    """
+    특정 시즌에서 조회수가 높은 순으로 Style을 조회
+    """
     styles = (
         Style.objects.filter(season=season)
         .annotate(num_views=Count('views'))
@@ -227,7 +202,54 @@ def top_styles_by_season(request, season):
             .select_related('goods')
             .annotate(
                 price=Coalesce('goods__del_price', 'goods__price')  # del_price가 없으면 price를 사용
-            )[:3]  # 각 Style별로 상위 3개의 Goods만 가져옴
+            )
+        )
+
+        goods_data = [{
+            'name': sg.goods.name,
+            'brand': sg.goods.brand,
+            'price': sg.price
+        } for sg in goods_list]
+
+        # 컨텍스트에 스타일과 해당 상품 데이터 추가
+        context['styles_info'].append({
+            'subject': style.subject,
+            'url': style.url,
+            'goods': goods_data
+        })
+
+    # 템플릿에 컨텍스트 전달
+    return render(request, 'top_styles_by_season.html', context)
+
+
+def top_styles_c(request):
+    """
+    category 조회하는 기본 페이지 로직 구현
+    """
+    return render(request, 'top_styles_c.html')
+
+def top_styles_by_category(request, category):
+    """
+    특정 카테고리에서 조회수가 높은 순으로 Style을 조회
+    """
+    styles = (
+        Style.objects.filter(category=category)
+        .annotate(num_views=Count('views'))
+        .order_by('-num_views')[:5]
+    )
+
+    context = {
+        'styles_info': []
+    }
+
+    # 각 Style에 연관된 Goods 정보 조회
+    for style in styles:
+        goods_list = (
+            StyleGoods.objects.filter(style=style)
+            .select_related('goods')
+            .annotate(
+                price=Coalesce('goods__del_price', 'goods__price')  # del_price가 없으면 price를 사용
+            )
         )
 
         goods_data = [{
@@ -243,5 +265,5 @@ def top_styles_by_season(request, season):
             'goods': goods_data
         })
     print('**** 전달될 값은', context)
-    # 템플릿에 컨텍스트 전달
-    return render(request, 'top_styles_by_season.html', context)
+    
+    return render(request, 'top_styles_by_category.html', context)

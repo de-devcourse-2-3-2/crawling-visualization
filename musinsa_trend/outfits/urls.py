@@ -30,11 +30,8 @@ urlpatterns = [
     path('top-styles/', views.top_styles, name='top_styles'),
     # 계절이 선택되었을 때의 경로
     path('top-styles/<str:season>/', views.top_styles_by_season, name='top_styles_by_season'),
+    # 기본 페이지 경로: 카테고리가 선택되지 않았을 때
+    path('top-styles-c/', views.top_styles_c, name='top_styles_c'),
+    # 카테고리가 선택되었을 때의 경로
+    path('top-styles-c/<str:category>/', views.top_styles_by_category, name='top_styles_by_category'),
 ]
-
-# urlpatterns = [
-    # path('category_brand_count/', views.category_brand_count, name='category_brand_count'),
-    # path('season-style-trend/', views.season_style_trend, name='season_style_trend'),
-    # path('popular-styles/', views.popular_styles_by_category, name='popular_styles_by_category'),
-    # path('top-styles/', views.top_styles_by_season, name='top_styles_by_season'),
-# ]
