@@ -8,8 +8,8 @@ import logging
 from logger import setLogOptions
 from django.db.models import Sum
 from django.db.models.functions import ExtractYear, ExtractMonth, Coalesce
-from ..plot.plot import *
-from .utils import Utils
+from plot.plot import *
+from plot.utils import Utils
 
 setLogOptions()
 logger = logging.getLogger(__name__)
