@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # app
     'outfits',
+    'plot',
 ]
 
 MIDDLEWARE = [

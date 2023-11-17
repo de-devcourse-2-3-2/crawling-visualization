@@ -14,50 +14,10 @@ from .utils import Utils
 setLogOptions()
 logger = logging.getLogger(__name__)
 
-# # Create your views here.
-
-# # style_brand_count():
-# #     return Json
-
-# # season_style_trend(season):
-# #     return Json
-
 
 @api_view(['GET'])
 def index(request) :
     return render(request,'index.html')
-
-
-@api_view(['GET'])
-def chart(request):
-    filename_img = ''
-    plot = Plot()
-    utils = Utils()
-    chart_type = request.GET.get('chart_type', 1)
-    category = request.GET.get('category', '스포티')
-    if chart_type == '1' : # 스타일 동향 line chart
-        # 로직이 구현되지 않음
-        # data = some_function()
-        # Plot.line(data)
-        filename_img = Plot.FILE_NAME_LINE
-    elif chart_type == '2' : # 스타일 카테고리 별 브랜드 점유 Pie chart
-        raw_data = category_brand_count()
-        # Or you use sample data with alternative code below
-        # raw_data = Utils.SAMPLE_PIE
-        data = Utils.get_data_for_pie(category,raw_data)
-        if plot.pie(data) :
-            filename_img = Plot.FILE_NAME_PIE
-    elif chart_type == '3' : # 시즌 별 스타일 stacked bar chart
-        raw_data = season_style_trend()
-        # print('-'*50)
-        # print(raw_data)
-        # print('-'*50)
-        # Or you use sample data with alternative code below
-        # raw_data = Utils.SAMPLE_STACKED_BAR
-        data = utils.get_data_for_stacked_bar(raw_data)
-        if plot.stacked_bar(data) :
-            filename_img = plot.FILE_NAME_STACKED_BAR
-    return Response({'filename_img' : filename_img})
 
 @api_view(['GET'])
 def chart(request):
@@ -67,10 +27,7 @@ def chart(request):
     utils = Utils()
     chart_type = request.GET.get('chart_type', 1)
     category = request.GET.get('category', '스포티')
-    if chart_type == '1' : # 스타일 동향 line chart
-        # 로직이 구현되지 않음
-        # data = some_function()
-        # Plot.line(data)
+    if chart_type == '1' : 
         date_list, category_views_dict = get_data_for_page_1()
         logging.info(f'line__{date_list}')
         logging.info(f'line__{category_views_dict}')
@@ -79,24 +36,40 @@ def chart(request):
 
     elif chart_type == '2' : # 스타일 카테고리 별 브랜드 점유 Pie chart
         raw_data = category_brand_count()
-        # Or you use sample data with alternative code below
-        # raw_data = Utils.SAMPLE_PIE
         data = Utils.get_data_for_pie(category,raw_data)
         if plot.pie(data) :
             filename_img = Plot.FILE_NAME_PIE
 
     elif chart_type == '3' : # 시즌 별 스타일 stacked bar chart
         raw_data = season_style_trend()
-        # print('-'*50)
-        # print(raw_data)
-        # print('-'*50)
-        # Or you use sample data with alternative code below
-        # raw_data = Utils.SAMPLE_STACKED_BAR
         data = utils.get_data_for_stacked_bar(raw_data)
         if plot.stacked_bar(data) :
             filename_img = plot.FILE_NAME_STACKED_BAR
     return Response({'filename_img' : filename_img})
 
+def get_data_for_page_1():
+    # 2022-01, 2022-02, .. , 2022-12
+    date_list = []
+    for month in range(1, 13):
+        date_list.append(f"2022-{month:02}")
+    
+    category_list = ["걸리시", "고프코어", "골프", "댄디", "레트로", "로맨틱", "비즈니스캐주얼", "스트릿", "스포티", "시크", "아동복", "아메카지", "캐주얼", "홈웨어"]
+    category_views_dict = {category : [0 for _ in range(12)] for category in category_list}
+    # category이름 : [월별 조회수]
+
+    for i in range(12):
+        query_result = Style.objects.filter(date__year=2022, date__month=i+1) \
+                        .values('category') \
+                        .annotate(total_views=Sum('views')) \
+                        .order_by('-total_views')
+        # query_result = {"category1이름" : 조회수1, "category2이름" : 조회수2, ...}
+
+        for j in range(len(query_result)):
+            category_name = query_result[j]['category']
+            total_views = query_result[j]['total_views']
+            category_views_dict[category_name][i] = total_views
+
+    return date_list, category_views_dict
 
 @api_view(['GET'])
 def stylecat(request):
