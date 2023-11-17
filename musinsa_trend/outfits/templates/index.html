@@ -206,13 +206,15 @@
                             const apiUrl = `../chart?chart_type=${chart_type.id}`;
                             const response = await makeAjaxRequest(apiUrl)
                                 .then(filename_img => { showImg(filename_img); });
-                        } else if (chart_type == 4) { // style list by category
+                        } else if (chart_type.id == 4) { // style list by category
+                            window.location.href = '../top-styles/';
                             //show category select container
                             elementCategorySelect.style.display = 'block';
                             //hide season select containter
                             elementSeasonSelect.style.display = 'none';
 
                         } else { // style list  by season
+                            window.location.href = '../top-styles-c/';
                             //show season select contatiner
                             elementSeasonSelect.style.display = 'block';
                             //hide category select container
@@ -266,8 +268,8 @@
 
             function get_styles_by_category(element) {
                 const categoryName = element.querySelector('button').id;
-                const apiUrl = `../styles_by_category?category=${categoryName}`;
-                get_styles_page(apiUrl, categoryName);
+                const apiUrl = `../top-styles/`;
+                get_styles_page(apiUrl);
             };
 
             function get_styles_by_season(element) {
@@ -276,7 +278,7 @@
                 get_styles_page(apiUrl, season);
             }
 
-            function get_styles_page(apiUrl, param) {
+            function get_styles_page(apiUrl) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == 4 && xhr.status == 200) {

@@ -11,7 +11,7 @@ class Plot() :
     FILE_NAME_LINE = 'image01.png'
     FILE_NAME_PIE = 'image02.png'
     FILE_NAME_STACKED_BAR = 'image03.png'
-    SAVE_DESTINATION = str(Path.cwd()) + '/plot/static/media/'
+    SAVE_DESTINATION = str(Path.cwd()) + '\\plot\\static\\media\\'
     # font_manager._rebuild()
     def font_setting(self, plt):
         # font setting for 한글
