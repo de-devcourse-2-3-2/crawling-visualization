@@ -3,60 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Season Style Trend</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #fff;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            width: 75%;
-            padding: 20px;
-            box-sizing: border-box;
-            border: 5px solid #2596be; /* 테두리 색상과 두께 */
-            margin: 0 auto; /* 가운데 정렬 */
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background: #f9f9f9;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 10px;
-        }
-        p {
-            color: #666;
-        }
-    </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Season Style Trend for {{ season }}</h1>
+<h1>Season Style Trend for {{ season }}</h1>
 
-    {% if styles %}
-        <ul>
-            {% for style in styles %}
-                <li>{{ style.category }}: {{ style.count }}</li>
-            {% endfor %}
-            <li>Others: {{ other_count }}</li>
-        </ul>
-    {% else %}
-        <p>No styles found for this season.</p>
-    {% endif %}
-</div>
+{% if styles %}
+    <ul>
+        {% for style in styles %}
+            <li>{{ style.category }}: {{ style.count }}</li>
+        {% endfor %}
+        <li>Others: {{ other_count }}</li>
+    </ul>
+{% else %}
+    <p>No styles found for this season.</p>
+{% endif %}
 
 </body>
 </html>

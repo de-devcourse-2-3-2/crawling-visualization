@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Styles by category</title>
+    <style>
+        body {
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            border: 5px solid #2596be; /* 테두리 색상과 두께 설정 */
+            border-radius: 25px; /* 둥근 테두리 설정 */
+            padding: 20px;
+            margin: 20px auto; /* 자동으로 상자를 중앙 정렬 */
+            width: 80%; /* 상자의 너비 */
+            max-width: 500px; /* 상자의 최대 너비 */
+        }
+        .dropdown-label, .dropdown {
+            margin-bottom: 20px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; /* 드롭다운 너비 전체 사용 */
+        }
+        .dropbtn {
+            width: 100%; /* 버튼 너비 전체 사용 */
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            left: 0; /* 드롭다운을 버튼과 동일한 너비로 설정 */
+            right: 0;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content div {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content div:hover {
+            background-color: #f1f1f1;
+        }
+        .show {display:block;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>카테고리 별 최상위 스타일</h1>
+        <div class="dropdown-label">아래에서 카테고리를 선택해주세요</div>
+        <div class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown()">카테고리 선택</button>
+            <div id="myDropdown" class="dropdown-content">
+                <div onclick="selectCategory('걸리시')">걸리시</div>
+                <div onclick="selectCategory('고프코어')">고프코어</div>
+                <div onclick="selectCategory('골프')">골프</div>
+                <div onclick="selectCategory('댄디')">댄디</div>
+                <div onclick="selectCategory('레트로')">레트로</div>
+                <div onclick="selectCategory('로맨틱')">로맨틱</div>
+                <div onclick="selectCategory('비즈니스캐주얼')">비즈니스캐주얼</div>
+                <div onclick="selectCategory('스트릿')">스트릿</div>
+                <div onclick="selectCategory('스포티')">스포티</div>
+                <div onclick="selectCategory('시크')">시크</div>
+                <div onclick="selectCategory('아동복')">비즈니스캐주얼</div>
+                <div onclick="selectCategory('아메카지')">스트릿</div>
+                <div onclick="selectCategory('캐주얼')">스포티</div>
+                <div onclick="selectCategory('홈웨어')">시크</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 드롭다운 메뉴를 표시하거나 숨기는 함수
+        function toggleDropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // 사용자가 시즌을 선택하면 해당 시즌의 스타일 페이지로 이동
+        function selectCategory(category) {
+            window.location.href = '/outfits/top-styles-c/' + category + '/';
+        }
+
+        // 페이지 외부를 클릭하면 드롭다운 닫기
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
