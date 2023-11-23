@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Season Style Trend</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .style-container {
+            width: 75%;
+            margin: 20px auto; /* Centers the container with auto margins */
+            border: 5px solid #2596be; /* Border color and thickness */
+            border-radius: 15px; /* Rounded corners */
+            box-sizing: border-box; /* Include padding and border in the width */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for styling */
+            display: flex; /* Use flexbox for centering */
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center children horizontally */
+            overflow: hidden; /* Hide overflowing content */
+        }
+        .style-content {
+            width: 100%; /* Full width of the container */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content */
+            padding: 20px; /* Padding inside the container */
+        }
+        img {
+            max-width: 100%; /* Ensure image is responsive and fits the container */
+            height: auto;
+            margin-bottom: 20px; /* Space below the image */
+        }
+        ul {
+            list-style-type: none; /* Remove default list styling */
+            padding: 0;
+            margin: 0; /* Remove default margin */
+            width: 100%; /* Full width for the list */
+            text-align: center; /* Center the text for each list item */
+        }
+        li {
+            background-color: #f9f9f9; /* Light background for list items */
+            margin-bottom: 10px; /* Space between list items */
+            padding: 10px;
+            border-radius: 10px; /* Rounded corners for list items */
+        }
+    </style>
+</head>
+<body>
+
+{% for style_info in styles_info %}
+<div class="style-container">
+    <div class="style-content">
+        <img src="{{ style_info.url }}" alt="Style Image">
+        <h2>{{ style_info.subject }}</h2>
+        <p>{{ style_info.tag }}</p>
+        <ul>
+            {% for good in style_info.goods %}
+            <li>{{ good.name }} - {{ good.brand }} - ${{ good.price }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endfor %}
+
+</body>
+</html>

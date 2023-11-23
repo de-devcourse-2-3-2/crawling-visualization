@@ -1,0 +1,20 @@
+<div id="list-cotainter">
+	<h3>인기있는 스타일을 직접 확인해보세요</h3>
+	<div class="division_attribute" style="border-bottom:0;">
+		
+	</div>
+	<ul style="display : flex;">
+		{% for item in data %}
+		<li>
+			<div>
+				<a href="http://musinsa.com/app/styles/views/" + {{ item.subject|slice:"7:" }}>
+					<img src="http://" + {{item.URL}}>
+				</a>
+			</div>
+			<div>
+				<p>조회 {{item.views}}</p>
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
