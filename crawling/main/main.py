@@ -1,7 +1,19 @@
 from crawling import Crawling
 
-# 여기서 컴퓨팅 리소스를 더 쓰되, 두 크롤링을 동시에 수행하게 만든다면 더욱 재밌
 if __name__ == '__main__':
-    # DO create table
-    Crawling(top_url="https://www.musinsa.com/app/styles/lists").main_page_crawling()
-    Crawling(top_url="https://www.musinsa.com/app/codimap/lists").main_page_crawling()
+    """
+    Main script to initiate Crawling for style and codimap lists on Musinsa website.
+    
+    Example:
+    ```
+    python main.py
+    ```
+    """
+
+    # Crawling for Style Lists
+    style_crawler = Crawling(top_url="https://www.musinsa.com/app/styles/lists")
+    style_crawler.main_page_crawling()
+
+    # Crawling for Codimap Lists
+    codimap_crawler = Crawling(top_url="https://www.musinsa.com/app/codimap/lists")
+    codimap_crawler.main_page_crawling()
