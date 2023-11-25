@@ -14,10 +14,7 @@ class Plot() :
     SAVE_DESTINATION = str(Path.cwd()) + '\\plot\\static\\media\\'
     # font_manager._rebuild()
     def font_setting(self, plt):
-        # font setting for 한글
-        font_path = 'C:\\Windows\\Fonts\\malgunsl.ttf'
-        custom_font = font_manager.FontProperties(fname=font_path)
-        plt.rcParams['font.family'] = custom_font.get_name()
+        plt.rcParams["font.family"] = "NanumGothic"
 
     def get_file_name_line(self):
         return self.FILE_NAME_LINE
