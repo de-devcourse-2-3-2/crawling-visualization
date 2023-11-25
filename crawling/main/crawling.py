@@ -2,8 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import re
-from crawling.main import postgres_write as pw
-from crawling.main.common import *
+import postgres_write as pw
+from common import *
 
 
 class Crawling:
@@ -94,16 +94,16 @@ class Crawling:
         postgres.tables_create()
 
         with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
-            soup = set_driver_and_soup(self.top_url, driver)
+            soup = set_driver_and_soup(crawling_page_url=self.top_url, driver=driver)
             total_pages_number = int(soup.find("span", "totalPagingNum").text)
 
             # for i in range(1, total_pages_number + 1):
             for i in range(1, 5):
-                soup = set_driver_and_soup(f"https://www.musinsa.com/app/codimap/lists?page={i}")
+                soup = set_driver_and_soup(crawling_page_url=f"https://www.musinsa.com/app/codimap/lists?page={i}", driver=driver)
                 codi_number, style_data_list = self.main_page_scraping(soup)  # db write 단위!
 
                 # 상세 페이지 크롤링 시작을 위해 soup 재세팅
-                soup = set_driver_and_soup(f"https://www.musinsa.com/app/styles/views/{codi_number}") # 해당 코디 상세 페이지
+                soup = set_driver_and_soup(crawling_page_url=f"https://www.musinsa.com/app/styles/views/{codi_number}", driver=driver) # 해당 코디 상세 페이지
                 tags = return_list_data(soup, "a", "ui-tag-list__item")  # 태그 목록 예시) "#겨울"
                 style_data_list.append(" ".join(tags))
                 # add_at_columns(style_data_list)
