@@ -10,10 +10,10 @@ if __name__ == '__main__':
     ```
     """
 
-    # Crawling for Style Lists
-    style_crawler = Crawling(top_url="https://www.musinsa.com/app/styles/lists")
-    style_crawler.main_page_crawling()
-
     # Crawling for Codimap Lists
-    codimap_crawler = Crawling(top_url="https://www.musinsa.com/app/codimap/lists")
-    codimap_crawler.main_page_crawling()
+    codimap_crawler = Crawling(target_link = "codimap")
+    codimap_crawler.main_page_crawling_scrapping()
+
+    # Crawling for Style Lists
+    style_crawler = Crawling(target_link = "styles")
+    style_crawler.main_page_crawling_scrapping()
