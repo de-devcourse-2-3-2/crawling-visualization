@@ -98,8 +98,8 @@ DATABASES = {
         'NAME': 'musinsa',
         'USER': 'postgres',
         'PASSWORD': '1234',
-        'HOST': 'localhost',   
-        'PORT': '',
+        'HOST': 'database',
+        'PORT': '5432',
     }
 }
 

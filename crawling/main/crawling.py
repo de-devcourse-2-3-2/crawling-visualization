@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 import postgres_write as pw
@@ -23,7 +24,11 @@ class Crawling:
         postgres = pw.DB_Write()
         postgres.tables_create()
 
-        with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
+        op = Options()
+        op.add_argument('headless')
+        op.add_argument('window-size=1920X1080')
+        op.add_argument('headless')
+        with webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=op) as driver:
             main_page_url = f"https://www.musinsa.com/app/{self.target_link}/lists"
             soup = set_driver_and_soup(crawling_page_url=main_page_url, driver=driver)
             total_paging_num = int(soup.find("span", "totalPagingNum").text)
