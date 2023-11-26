@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  database:
+    image: postgres
+#    restart: always
+    container_name: mypsql
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_HOST: musinsa-trend  # 127.0.0.1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: musinsa
+    volumes:
+      - ./data/postgres/:/var/lib/postgresql/data
+
+  # 서비스 명
+  musinsa-trend:
+    image: musinsa-trend:1.0  # 자체 도커 이미지 사용
+    container_name: musinsa
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0:8000
+    depends_on:
+      - database  # condition: service_healthy
+    stdin_open: true  # Enable STDIN (standard input) to stay open
+    tty: true        # Allocate a pseudo-TTY for terminal interaction

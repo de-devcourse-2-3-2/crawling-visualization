@@ -27,7 +27,7 @@ class DB_Write:
         self.db_config = {
             'user': 'postgres',
             'password': 1234,
-            'host': 'localhost',
+            'host': 'database',
             'port': 5432,
             'database': 'musinsa',
             'options': "-c client_encoding=utf8",

@@ -2,6 +2,7 @@
 .idea
 app.log
 venv
+data
 mysite/**/__pycache__
 mysite/**/migrations/__pycache__
 
