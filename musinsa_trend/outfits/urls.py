@@ -5,14 +5,9 @@ from rest_framework import permissions
 from rest_framework.schemas import get_schema_view
 from . import views
 
-# static file url example :
-# www.example.com:8000/static/media/image01.png
-
 urlpatterns = [
-    path('index/', views.index, name='index'),
+    path('', views.index, name='index'),
     path('chart', views.chart, name='chart'),
-    # path('styles_by_category', views.stylecat, name='styles_by_season'),
-    # path('styles_by_season', views.stylesea, name='styles_by_season'),
     
     # Generic schema view of app
     path('schema_view/', get_schema_view(

@@ -1,19 +1,44 @@
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
-from matplotlib import font_manager
+from matplotlib import font_manager, rc
 from pathlib import Path
 import pandas as pd
 from .utils import Utils
 from datetime import datetime
+import os
+import matplotlib.font_manager
+
+# font_manager._rebuild()
 
 class Plot() :
     # Constants for managing files
-    FILE_NAME_LINE = 'image01.png'
-    FILE_NAME_PIE = 'image02.png'
-    FILE_NAME_STACKED_BAR = 'image03.png'
+    FILE_NAME_LINE = ''
+    FILE_NAME_PIE = ''
+    FILE_NAME_STACKED_BAR = ''
     SAVE_DESTINATION = str(Path.cwd()) + '\\plot\\static\\media\\'
     # font_manager._rebuild()
+    
     def font_setting(self, plt):
+        # font_path = os.path.join(os.path.dirname(__file__), 'static', 'resources', 'NanumGothic.ttf')
+        font_path = 'plot/static/resources/NanumGothic.ttf'  # 여기서 경로를 .ttf 파일의 실제 경로로 바꿔주세요.
+        
+        # if os.path.exists(font_path):
+        #     print(f"파일이 존재합니다: {font_path}")
+        # else:
+        #     print(f"파일이 존재하지 않습니다: {font_path}")
+
+        # FontProperties 객체를 생성합니다.
+        # font_prop = font_manager.FontProperties(fname=font_path)
+        # font_list = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
+        # plt.rc('font', family='NanumGothic')
+        # matplotlib.rcParams['axes.unicode_minus'] = False
+        # 폰트 이름을 가져옵니다.
+        # # matplotlib의 전역 폰트 설정을 업데이트합니다.
+        # plt.rcParams['font.family'] = font_prop.get_name()
+        # plt.rcParams['axes.unicode_minus'] = False
+
+        # font_prop = font_manager.FontProperties(fname='plot/static/resources/NanumGothic.ttf')
+        # plt.xticks(fontproperties=font_prop)
         plt.rcParams["font.family"] = "NanumGothic"
 
     def get_file_name_line(self):
@@ -76,6 +101,7 @@ class Plot() :
 
         # create the plot
         ax = percent.plot(kind='barh', stacked=True, figsize=(12,8), colormap='terrain', xticks=[], legend=False)
+    
         # index label fontsize settings
         ax.set_yticklabels(ax.get_yticklabels(), fontsize=28)
         # remove ticks
