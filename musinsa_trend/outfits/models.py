@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+# id 필드를 한 군데도 코딩을 안했다. 스키마에 아이디가 있는데도 코딩 안해도 문제는 안생기는..?
 class Style(models.Model):
     subject = models.CharField(max_length=64)
     date = models.DateField(null=False)

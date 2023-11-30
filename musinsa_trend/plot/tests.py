@@ -6,7 +6,7 @@
 
 # class Plot_test(unittest.TestCase):
 
-    
+
 #     def test_line(self) :
 #         Plot.line(seasons,data)
 #         is_file = os.path.isfile(Plot.SAVE_DESTINATION + '/' + FILE_NAME_LINE)
@@ -20,8 +20,6 @@
 #     if __name__ == "__main__":
 #         unittest.main()
 
-
-    
 
 # ########
 # # SAMPLE
