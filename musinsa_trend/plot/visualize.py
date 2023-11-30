@@ -53,7 +53,7 @@ class Plot:  # init 메서드가 없는데 이걸 어케 써..? 여기에 () 이
         # 그래프 저장
         self.save_figure(plt, self.FILE_NAME_LINE)
 
-        return True
+        return self.FILE_NAME_LINE
 
     def pie(self, data):
         brands, totals = data
@@ -63,7 +63,7 @@ class Plot:  # init 메서드가 없는데 이걸 어케 써..? 여기에 () 이
         self.font_setting(plt)
         self.save_figure(fig, self.FILE_NAME_PIE)
         plt.close()
-        return True
+        return self.FILE_NAME_PIE
 
     def stacked_bar(self, data):
         # make it dataframe
@@ -103,4 +103,4 @@ class Plot:  # init 메서드가 없는데 이걸 어케 써..? 여기에 () 이
         # save it
         self.save_figure(ax.get_figure(), self.FILE_NAME_STACKED_BAR)
         plt.close()
-        return True
+        return self.FILE_NAME_STACKED_BAR
