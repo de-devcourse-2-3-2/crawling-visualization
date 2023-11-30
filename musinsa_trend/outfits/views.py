@@ -22,44 +22,10 @@ def index(request):
 
 
 @api_view(['GET'])
-def chart(request):  # index.html 안 function makeAjaxRequest에서 부르지만, urls.py path로 잡혀있는 건 아님
+def chart(request):
     chart_type = request.GET.get('chart_type', 1)
     category = request.GET.get('category', '스포티')
-    # ok 얘까진 납득. 뭘 하려는 건지 알 수 있는 코드다.
     return Response({'filename_img': visualize(chart_type, category)})
-
-
-@api_view(['GET'])
-def stylecat(request):  # 뭘 하는지 함수명만 보고 알 수 없음. 바꿔야 함
-    return render(request, 'style_list.html', popular_styles_by_category(request))
-
-# 위 함수랑 아래 함수랑 3번째 인자 하나 차이 뿐이므로, request 인자에 따라 다르게 하던지...뭔가 있어야 함.
-@api_view(['GET'])
-def stylesea(request):  # 마찬가지임
-    return render(request, 'style_list.html', top_styles_by_season(request))
-
-
-def popular_styles_by_category(request):
-    """
-    카테고리에 대한 최상위 스타일 5개 조회
-    해당 스타일에 있는 사진, 그 스타일에 있는 상품 list 조회
-    """
-    category_name = request.GET.get('category')
-    if category_name:
-        top_styles = Style.objects.filter(category=category_name).order_by('-views')[:5]
-
-        results = [
-            {
-                'subject': style.subject,
-                'views': style.views,
-                'url': style.URL,
-                'goods_list': list(StyleGoods.objects.filter(style=style).values('goods__name', 'goods__brand'))
-            } for style in top_styles
-        ]
-        logger.info(f'*******popular_styles_by_category : {results} 이 검색되었습니다.')
-        return JsonResponse(results, safe=False)
-    else:
-        return JsonResponse({'error': '카테고리가 지정되지 않았습니다.'}, status=400)
 
 
 def top_styles(request):
@@ -158,7 +124,41 @@ def top_styles_by_category(request, category):
     return render(request, 'top_styles_by_category.html', context)
 
 
-# 이하는 render, JSONResponse를 하지 않는 service 로직에 가까운 애들
+@api_view(['GET'])
+def stylecat(request):  # 뭘 하는지 함수명만 보고 알 수 없음. 바꿔야 함
+    return render(request, 'style_list.html', popular_styles_by_category(request))
+
+# 위 함수랑 아래 함수랑 3번째 인자 하나 차이 뿐이니 request 인자에 따라 다르게 하던지..
+@api_view(['GET'])
+def stylesea(request):  # 마찬가지임
+    return render(request, 'style_list.html', top_styles_by_season(request))
+
+
+def popular_styles_by_category(request):
+    """
+    카테고리에 대한 최상위 스타일 5개 조회
+    해당 스타일에 있는 사진, 그 스타일에 있는 상품 list 조회
+    """
+    category_name = request.GET.get('category')
+    if category_name:
+        top_styles = Style.objects.filter(category=category_name).order_by('-views')[:5]
+
+        results = [
+            {
+                'subject': style.subject,
+                'views': style.views,
+                'url': style.URL,
+                'goods_list': list(StyleGoods.objects.filter(style=style).values('goods__name', 'goods__brand'))
+            } for style in top_styles
+        ]
+        logger.info(f'*******popular_styles_by_category : {results} 이 검색되었습니다.')
+        return JsonResponse(results, safe=False)
+    else:
+        return JsonResponse({'error': '카테고리가 지정되지 않았습니다.'}, status=400)
+
+
+
+# 이하는 render 또는 JSONResponse 반환 중 어느 것도 하지 않는 로직들
 def visualize(chart_type, category):
     img_file_path, plot, utils = "", Plot(), Utils()
     if chart_type == '1':

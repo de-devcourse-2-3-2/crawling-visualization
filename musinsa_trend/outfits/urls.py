@@ -1,7 +1,5 @@
-import os
 from django.urls import path
 from django.views.generic import TemplateView
-from rest_framework import permissions
 from rest_framework.schemas import get_schema_view
 from .views import *
 
@@ -10,8 +8,8 @@ from .views import *
 
 urlpatterns = [
     path('index/', index, name='index'),
-    path('chart', chart, name='chart'),  # TODO: TDD 책에 나와 있던 대로 '/' 추가 여부 통일하기
-    # TODO: 인자를 여기가 아닌 (스프링부트 기준) controller 단에서 처리하도록 만들 수 있는지 알아보기
+    path('chart', chart, name='chart'),
+    # TODO: path를 top-styles 하나 혹은 top-styles-season&category 둘로 줄이기
     path('top-styles/', top_styles, name='top_styles'),  # 계절이 선택되지 않았을 때
     path('top-styles/<str:season>/', top_styles_by_season, name='top_styles_by_season'),  # 계절이 선택 됐을 때
     path('top-styles-c/', top_styles_c, name='top_styles_c'),  # 카테고리가 선택되지 않았을 때
