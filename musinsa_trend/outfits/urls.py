@@ -7,7 +7,7 @@ from .views import *
 # www.example.com:8000/static/media/image01.png
 
 urlpatterns = [
-    path('index/', index, name='index'),
+    path('', index, name='index'),
     path('chart', chart, name='chart'),
     # TODO: path를 top-styles 하나 혹은 top-styles-season&category 둘로 줄이기
     path('top-styles/', top_styles, name='top_styles'),  # 계절이 선택되지 않았을 때
